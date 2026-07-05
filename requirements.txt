@@ -1,0 +1,7 @@
+# day_9x — full stack (Streamlit UI + local RAG). Python 3.12.
+fastembed>=0.3        # local ONNX embeddings, no PyTorch; downloads a small model on first run
+numpy>=1.26           # transparent numpy "vector store" — cosine similarity stays visible
+pandas>=2.0           # recon figures + breakeven ledger frames
+altair>=5.0           # breakeven curve + trust charts (Streamlit-native)
+anthropic>=0.40       # OPTIONAL — Haiku enrichment; the app runs $0 without a key
+streamlit==1.41.0     # pinned to match HuggingFace Spaces default

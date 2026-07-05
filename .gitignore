@@ -1,0 +1,11 @@
+# generated synthetic artefacts — rebuilt on boot by generate_data.ensure_generated()
+data/
+
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.env
+
+# Office lock files (deck open in PowerPoint)
+~$*

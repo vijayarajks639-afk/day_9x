@@ -32,7 +32,7 @@ def ensure_dirs() -> None:
 
 
 # ── Version (see CHANGELOG.md; v0.1 frozen as git tag v0.1) ───────────────────
-VERSION = "0.1"
+VERSION = "2.0"
 
 # ── Determinism ───────────────────────────────────────────────────────────────
 SEED = 90                              # same seed = same synthetic team every run
@@ -154,6 +154,13 @@ AUDIT_SAMPLE_RATE = 0.20   # fraction of AUTONOMOUS tasks still audited
 LABEL_LLM = "AI SUGGESTION — needs sign-off (not audit-grade)"
 LABEL_DETERMINISTIC = "DETERMINISTIC — rule/retrieval backbone (audit-grade)"
 LABEL_ABSTAIN = "ABSTAINED — not enough grounding; escalated to a human"
+
+
+# ── ACL / least-privilege (v2.0 — the charter's resource scopes, ENFORCED) ────
+# Kai's badge is not the master key: questions touching these topics are refused
+# with a scope message and escalated to a human — never answered, never guessed.
+ACL_BLOCKED_TOPICS = ["salary", "compensation", "pay band", "bonus",
+                      "appraisal", "performance rating"]
 
 
 # ── Watkins attribution (rendered in README + in-app footer) ──────────────────

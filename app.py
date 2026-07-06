@@ -8,6 +8,8 @@ ANTHROPIC_API_KEY, shadow-mode Q&A adds a Haiku synthesis pass; nothing else cha
 """
 from __future__ import annotations
 
+import json
+
 import altair as alt
 import pandas as pd
 import streamlit as st
@@ -15,6 +17,7 @@ import streamlit as st
 import config
 import generate_data
 import breakeven as be
+import gaps as gaps_mod
 from charter import Charter, sprint_snapshot, checkpoints, phase_plan
 
 st.set_page_config(page_title="day_9x — Your First AI Teammate", page_icon="🧑‍🚀", layout="wide")
@@ -27,8 +30,19 @@ PHASE_COLOR = {"SHADOW": "#6366f1", "GATED": "#0ea5e9", "AUTONOMOUS": "#10b981"}
 def boot():
     generate_data.ensure_generated()
     import rag
+    import board as board_mod
+    import gaps as gaps_mod
     from agent import Teammate, load_backlog
     idx = rag.Index().build()
+    # v2.0 (m2): a fresh PROCESS starts from the honest "before" — no coached
+    # Skills, teachers, gaps or contribution log carried over from a prior run
+    # (matters on a shared public Space, where a new audience must not inherit
+    # stale state). In-session progress persists because @st.cache_resource runs
+    # boot() only once per process; concurrent viewers of one process still share
+    # state — press "Full demo reset" to re-baseline, or run one Space per demo.
+    board_mod.uncoach_all(idx)
+    board_mod.reset_logs()
+    gaps_mod.GapRegister().reset()
     return idx, Teammate(idx), load_backlog()
 
 
@@ -39,6 +53,7 @@ if "board" not in st.session_state:
     st.session_state.board = Board(tasks=backlog)
     st.session_state.coached = False
 board = st.session_state.board
+gap_register = gaps_mod.GapRegister()          # file-backed; survives reruns
 
 key_on = bool(config.get_key())
 st.title("🧑‍🚀 day_9x — Onboarding Your First AI Teammate")
@@ -117,11 +132,13 @@ with tab_shadow:
         preset = st.selectbox("Ask Kai (or type your own below)", [
             "What severity is an incident touching RegReport, and where does it route?",
             "What is the tolerance for the daily GL-Hub vs CreditMart reconciliation?",
+            "Is it ever unsafe to rerun a load, and when?",
             "Can I rerun the CreditMart load on Thursday morning?",
             "Who won the football world cup?",
         ])
         q = st.text_input("Question", value=preset)
         if st.button("Ask Kai", type="primary"):
+            import board as board_mod
             out = kai.answer(q)
             badge = {config.LABEL_ABSTAIN: "🟠", config.LABEL_LLM: "🟢",
                      config.LABEL_DETERMINISTIC: "🔵"}[out.label]
@@ -129,28 +146,92 @@ with tab_shadow:
             st.markdown(out.text)
             if out.citations:
                 st.caption("Citations: " + " · ".join(f"`{c}`" for c in out.citations))
-            if out.escalation:
-                st.info("🙋 Escalation: " + out.escalation)
+                board_mod.credit_citations(out.citations)   # teachers get credit
+                board_mod.log_contribution("qa", "shadow", f"answered: {q[:60]}")
+            if out.acl_blocked:
+                st.warning("🔒 " + out.escalation)
+            elif out.escalation:
+                gap = gap_register.record(q, out.escalation, source="qa")
+                st.info(f"🙋 Escalation: {out.escalation}")
+                st.success(f"⛏️ Logged as knowledge gap **{gap.id}** — nothing Kai "
+                           "can't answer is lost; it becomes a mining lead below.")
     with right:
         st.markdown("##### The cultural-learning moment")
         st.write("Kai's **technical** learning is instant — it read every runbook. Its "
-                 "**cultural** learning is zero until a human encodes it. Ask the *Thursday* "
-                 "question before and after coaching:")
+                 "**cultural** learning is zero until a human encodes it. Uncoached, the "
+                 "*Thursday* question gets a confident answer from the nearest recon "
+                 "runbook that silently **omits the Thursday rule** — the probation eval "
+                 "catches it (missing 'Thursday'). Coach the rule and it answers "
+                 "correctly, with a citation:")
         if not st.session_state.coached:
             if st.button("👩‍🏫 Coach the unwritten rules → write a Skill"):
                 from board import coach_unwritten_rules
                 coach_unwritten_rules(index)
                 st.session_state.coached = True
                 st.rerun()
-            st.caption("Skill not yet coached — the Thursday question will abstain.")
+            st.caption("Skill not yet coached — the Thursday rule lives in nobody's "
+                       "runbook, only in people's heads, so the eval gate stays red "
+                       "until it's coached.")
         else:
             st.success("✅ Skill `unwritten_rules.md` coached into the corpus. "
                        "Kai can now answer the Thursday question — with a citation.")
-            if st.button("↺ Reset coaching"):
-                from board import uncoach_all
-                uncoach_all(index)
-                st.session_state.coached = False
-                st.rerun()
+        if st.button("↺ Full demo reset (skills · gaps · logs)"):
+            import board as board_mod
+            board_mod.uncoach_all(index)
+            board_mod.reset_logs()
+            gap_register.reset()
+            st.session_state.coached = False
+            st.rerun()
+        if index.superseded:
+            st.caption("🗓️ Freshness rule active — excluded as superseded: "
+                       + ", ".join(f"`{old}` (replaced by `{new}`)"
+                                   for old, new in index.superseded.items()))
+        import board as board_mod
+        teachers = board_mod.teachers_of_the_sprint()
+        if teachers:
+            st.markdown("##### 🏆 Teachers of the sprint")
+            st.caption("Named credit is the incentive that flips knowledge "
+                       "hoarding into teaching — 'your knowledge answered N questions.'")
+            st.dataframe(pd.DataFrame(teachers), hide_index=True,
+                         use_container_width=True)
+
+    # ── The knowledge miner (v2.0): gap register → Kai interviews the SME ─────
+    st.divider()
+    st.markdown("#### ⛏️ Knowledge gaps — Kai mines what the corpus can't answer")
+    open_gaps = gap_register.open_gaps()
+    if not open_gaps:
+        st.caption("No open gaps. Ask Kai something no runbook covers — try "
+                   "*\"Is it ever unsafe to rerun a load, and when?\"* — and the "
+                   "miss lands here as a mining lead.")
+    else:
+        import board as board_mod
+        pick_gap = st.selectbox(
+            "Open gaps", open_gaps,
+            format_func=lambda g: f"{g.id} · {g.question}  ({g.status})")
+        st.caption(f"Kai's hypothesis: {pick_gap.hypothesis}")
+        st.markdown("**🎤 Kai's interview questions for the SME:**")
+        for i, iq in enumerate(kai.interview_questions(pick_gap), 1):
+            st.markdown(f"{i}. {iq}")
+        with st.form(f"interview_{pick_gap.id}"):
+            humans = [m["name"] for m in json.loads(
+                (config.DATA_DIR / "team.json").read_text(encoding="utf-8"))
+                if m["name"] != "Kai"]
+            sme = st.selectbox("SME being interviewed", humans, index=3)
+            answer = st.text_area(
+                "The SME's answer (type what the expert says)",
+                placeholder="e.g. Never rerun that load while Finance holds its "
+                            "reconciliation window — wait until after 13:00…")
+            if st.form_submit_button("✍️ Kai: write it up as a Skill", type="primary"):
+                if answer.strip():
+                    fname = board_mod.author_skill(index, pick_gap, sme, answer)
+                    gap_register.close(pick_gap.id, sme, fname)
+                    st.success(f"Skill `{fname}` authored — coached by **{sme}**, "
+                               f"cited from now on, gap **{pick_gap.id}** closed. "
+                               "Re-ask the question above to see it answered.")
+                    st.rerun()
+                else:
+                    st.error("The SME's answer is empty — knowledge can't be "
+                             "mined from silence.")
 
 
 # ── TAB 3 · Early wins ────────────────────────────────────────────────────────
@@ -165,7 +246,10 @@ with tab_wins:
             st.caption(t["detail"])
             c1, c2, c3, c4 = st.columns(4)
             if c1.button("Kai: draft", key=f"d{t['id']}"):
-                board.submit_draft(t, kai.attempt(t))
+                out = kai.attempt(t)
+                board.submit_draft(t, out)
+                if out.escalation and not out.acl_blocked:
+                    gap_register.record(t["title"], out.escalation, source="task")
             draft = board.drafts.get(t["id"])
             if draft:
                 badge = "🟠" if draft.abstained else "🔵"
@@ -214,6 +298,15 @@ with tab_review:
             "ALL GATES GREEN — promotion may be offered per class."
             if allg else "Gates red — hold. Coach Skills / keep reviewing. Trust is earned.")
 
+    with st.expander("🔎 Retrieval-eval scorecard — does the right knowledge surface?"):
+        st.caption("Task evals grade the ANSWER; this grades the RETRIEVAL. Most "
+                   "production RAG teams run no retrieval evaluation at all — "
+                   "this scorecard is the discipline that separates a demo from "
+                   "a deployable.")
+        from evals import retrieval_scorecard
+        st.dataframe(pd.DataFrame(retrieval_scorecard(index)), hide_index=True,
+                     use_container_width=True)
+
 
 # ── TAB 5 · Breakeven + Retro ─────────────────────────────────────────────────
 with tab_be:
@@ -246,3 +339,31 @@ with tab_be:
     pick = st.select_slider("Checkpoint (x)", options=checkpoints(duration),
                             value=checkpoints(duration)[-1])
     st.markdown(be.checkpoint_report(entries, pick, duration, stars_key))
+
+    # ── Team impact (v2.0): the 52%-fear answer, in the product ───────────────
+    st.divider()
+    st.markdown("#### 🧑‍🤝‍🧑 One team — what each human gets back")
+    st.write("In this story the AI is the **junior**; the humans are the mentors, "
+             "reviewers and deciders. Every hour Kai returns is redeployed toward "
+             "the review-and-judgement work that was always understaffed — where AI "
+             "is embedded well, **48% of workers report feeling energized vs 19% "
+             "without** (Adaptavist, 2025).")
+    st.dataframe(pd.DataFrame(be.team_impact(entries)), hide_index=True,
+                 use_container_width=True)
+    st.caption("**Stays human — written down, not implied:** " +
+               " · ".join(charter.stays_human))
+
+    # ── Retro: Kai's contribution log + co-presentation (v2.0) ────────────────
+    st.divider()
+    st.markdown("#### 📋 Retro — Kai's contribution log")
+    import board as board_mod
+    log = board_mod.contribution_log()
+    if log:
+        st.dataframe(pd.DataFrame(log), hide_index=True, use_container_width=True)
+        st.download_button("⬇️ Sprint-review co-presentation (markdown)",
+                           board_mod.co_presentation(),
+                           file_name="sprint_review_copresentation.md")
+    else:
+        st.caption("Nothing logged yet this session — ask questions on the Shadow "
+                   "tab or work the Early-wins board, and the retro fills itself. "
+                   "The retro that analyzes the agent's log is the new team ritual.")

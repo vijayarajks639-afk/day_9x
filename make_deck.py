@@ -1,8 +1,12 @@
-"""D9X-15 — Generate the stakeholder deck: day_9x_stakeholder_deck.pptx.
+"""D9X-15 / D9X-25 — Generate the stakeholder deck: day_9x_stakeholder_deck.pptx.
 
 A detailed, presentation-ready PPT for Vijay to walk stakeholders (or an Anthropic
 interviewer) through the prototype. Numbers are pulled LIVE from the model
-(breakeven.simulate / charter) so the deck always matches the actual build.
+(breakeven.simulate / team_impact / charter) so the deck always matches the build.
+
+v2.0 adds the knowledge-miner arc: the second money shot (gap → SME interview →
+attributed Skill), "Teachers of the sprint" (attribution flips hoarding into
+teaching), the one-team impact slide, and a refreshed delivery-evidence slide.
 
 Run:  python make_deck.py
 """
@@ -37,6 +41,9 @@ def _live_numbers():
         out[stars] = {"breakeven": be.breakeven_day(d),
                       "net": float(d["cum_net"].iloc[-1]),
                       "dip": float(d["cum_net"].min())}
+    # v2.0 team-impact: analyst-hours Kai returns to the humans over a turnaround run
+    impact = be.team_impact(be.simulate(90, "Turnaround"))
+    out["hours_returned"] = round(sum(r["Hours returned"] for r in impact), 0)
     return out
 
 
@@ -70,6 +77,8 @@ def _title_slide(prs, nums):
     p = tf.add_paragraph()
     _run(p, "day_9x — an AI agent's first 90 days on a credit-risk data-ops team",
          20, RGBColor(0xC7, 0xD2, 0xFE))
+    p = tf.add_paragraph()
+    _run(p, "v2.0 · the knowledge miner", 13, GREEN, bold=True)
     p = tf.add_paragraph()
     p.space_before = Pt(18)
     _run(p, "Modelled on Watkins' The First 90 Days · a 6-sprint, eval-gated onboarding · "
@@ -198,6 +207,34 @@ def build():
          "then GREEN. Evals, not vibes.", 0, INDIGO),
     ], footer="Trapped knowledge → reusable Skill. This is the thesis, made demoable.")
 
+    # 6b · the SECOND money shot — the knowledge miner (v2.0)
+    _content(prs, "The second money shot: Kai mines what the corpus can't answer", [
+        ("When Kai can't answer, the miss isn't lost — it's logged as a structured "
+         "knowledge gap (a mining lead), never a silent hallucination.", 0, None),
+        ("Kai turns the gap into SME interview questions; the SME answers; Kai writes it "
+         "up as a versioned, ATTRIBUTED Skill and reindexes — the question it abstained "
+         "on now answers, with a citation.", 0, INDIGO),
+        ("This is agent-led externalization: the 80% that was never written down gets "
+         "captured by interviewing the human who has it (research: 94.9% recall in "
+         "simulation), and the SME is the credited teacher — never an extraction target.",
+         0, None),
+        ("Almost nobody demos this. It is exactly the tacit-knowledge loop the POV names "
+         "as the prototype opportunity.", 0, GREEN),
+    ], footer="Gap register → SME interview → cited, versioned Skill. Trapped knowledge, "
+              "unlocked with consent and attribution.")
+
+    # 6c · teachers of the sprint — attribution as the incentive (v2.0)
+    _content(prs, "Teachers of the sprint — why attribution is the whole game", [
+        ("35% of knowledge workers deliberately hoard expertise to stay indispensable in "
+         "the AI era; AI awareness measurably increases knowledge-hiding.", 0, RGBColor(0xEF,0x44,0x44)),
+        ("So a program pitched as 'we'll capture the SMEs' knowledge' poisons its own "
+         "corpus. The fix is design, not sentiment: SMEs as named, credited teachers.", 0, None),
+        ("day_9x makes it visible — a 'Teachers of the sprint' board counts Skills coached "
+         "and citations served per SME: 'your knowledge answered N questions this sprint.'", 0, INDIGO),
+        ("Where AI is embedded well, 48% of workers feel energized vs 19% without. "
+         "Attribution is corpus-quality engineering.", 0, GREEN),
+    ], footer="The 'one team' framing isn't a slogan — it's what keeps the knowledge flowing in.")
+
     # 7 · breakeven metrics (live)
     _metric_slide(prs, "The breakeven point — in sprints, not months", [
         (f"Day {nums['Turnaround']['breakeven']}", "Turnaround breakeven\n(short shadow, fast wins)", GREEN),
@@ -221,17 +258,36 @@ def build():
     ], footer="What stays human, in writing: regulatory sign-off, stakeholder calls, ambiguous "
               "judgement, accountability.")
 
+    # 8b · one team — what each human gets back (v2.0)
+    _content(prs, "One team — what each human gets back", [
+        ("In this story the AI is the junior; the humans are the mentors, reviewers and "
+         "deciders. Every hour Kai returns is redeployed toward the review-and-judgement "
+         "work that was always understaffed.", 0, None),
+        (f"Over a modelled turnaround run, Kai returns ~{nums['hours_returned']:.0f} "
+         "analyst-hours to named teammates — Priya (triage), Arun (recon), Sofia (DQ) — who "
+         "shift from doing the routine work to reviewing and directing it.", 0, INDIGO),
+        ("The 'stays human' list is written down, not implied: regulatory sign-off, "
+         "stakeholder calls, ambiguous judgement, accountability.", 0, None),
+        ("Resist FTE-equivalence math in year one — measure task-class throughput, quality "
+         "and cycle time. The workforce story is redeployment, not reduction.", 0, GREEN),
+    ], footer="G3 answered in the product, not just the pitch: the 52%-job-fear stat met with a "
+              "per-person impact view and a written human-value-preservation list.")
+
     # 9 · delivery evidence
     _content(prs, "Delivery evidence — built the way the team works", [
-        ("Jira board (project D9X): 15 stories across 2 sprints, story-first, AI-actual worklogs "
-         "— importable via JIRA_IMPORT.csv. 13 Done, 2 blocked on a human credential.", 0, None),
-        ("Sprint cadence documented: 15-day sprints pace the work; 9-day day-9x checkpoints pace "
-         "stakeholder communication; they share the day-90 endpoint.", 0, None),
-        ("Tests: 15/15 green. Eval harness: 2 culture gates red uncoached → all green coached.", 0, GREEN),
-        ("GitHub evidence repo + public HuggingFace Space ($0 keyless) — deploy steps ready; "
-         "push/deploy pending a PAT / HF token supplied at the time (deliberately not stored).", 0, None),
+        ("Jira board (project D9X): 25 stories across 4 sprints, story-first, AI-actual worklogs "
+         "— importable via JIRA_IMPORT.csv. v0.1 frozen (git tag), v2.0 shipped.", 0, None),
+        ("v2.0 realism, not just narrative: a freshness rule excludes superseded runbooks; an "
+         "ACL refusal keeps salary/HR out of scope; a retrieval-eval scorecard grades whether the "
+         "RIGHT knowledge surfaces (most RAG teams run no retrieval evals at all).", 0, SKY),
+        ("Tests: 23/23 green. Eval harness: 2 culture gates red uncoached → all green coached "
+         "(the freshness + ACL cases pass green throughout — they are realism, not the teaching "
+         "moment).", 0, GREEN),
+        ("Built with a partner-agent team (Opus subagents for docs + an independent review pass, "
+         "D9X-26); token usage tracked per sprint. GitHub + HF Space deploy ready; push/deploy "
+         "pending a PAT / HF token supplied at the time (deliberately not stored).", 0, None),
     ], footer="Governance rails: synthetic data only; no key on a public Space; Watkins paraphrased "
-              "with attribution.")
+              "with attribution; an independent review documents outcomes in REVIEW_v2.md.")
 
     # 10 · close
     s = _section(prs, "The close", "Not a job-loss story — a promotion story", GREEN)
@@ -251,5 +307,6 @@ def build():
 if __name__ == "__main__":
     path, nums = build()
     print(f"Deck written: {path}")
-    print(f"  slides: 10 | live breakeven (turnaround): day {nums['Turnaround']['breakeven']}, "
-          f"net +{nums['Turnaround']['net']:.0f}h")
+    print(f"  slides: 13 | live breakeven (turnaround): day {nums['Turnaround']['breakeven']}, "
+          f"net +{nums['Turnaround']['net']:.0f}h | hours returned to humans: "
+          f"~{nums['hours_returned']:.0f}h")

@@ -153,3 +153,98 @@ def test_checkpoint_report_renders():
     e = be.simulate(90, "Turnaround")
     rpt = be.checkpoint_report(e, 90, 90, "Turnaround")
     assert "day-9x" in rpt.lower() and "analyst-hours" in rpt
+
+
+# ── v2.0 · the knowledge miner (gap register → interview → authored Skill) ────
+def test_gap_register_records_and_dedupes(tmp_path):
+    import gaps
+    reg = gaps.GapRegister(path=tmp_path / "gaps.json")
+    g1 = reg.record("Can I load vendor files on the 1st?", "no grounding")
+    g2 = reg.record("  can i load vendor files on the 1st?", "still nothing")
+    assert g1.id == "G-001" and g2.id == g1.id            # dedupe on the question
+    assert len(reg.open_gaps()) == 1
+    assert gaps.GapRegister(path=tmp_path / "gaps.json").gaps[0].id == "G-001"  # persisted
+
+
+def test_interview_roundtrip_authors_cited_skill(index, kai, tmp_path):
+    import board
+    import gaps
+    board.uncoach_all(index)
+    q = "Can vendor reference files be loaded on the first business day of the month?"
+    before = kai.answer(q)
+    assert "11:00" not in before.text                     # the rule exists nowhere yet
+    reg = gaps.GapRegister(path=tmp_path / "gaps.json")
+    gap = reg.record(q, before.escalation or "answered without the actual rule")
+    qs = kai.interview_questions(gap)
+    assert len(qs) == 3 and any("missing" in x.lower() or "rule" in x.lower() for x in qs)
+    fname = board.author_skill(
+        index, gap, "Arun Verma",
+        "Never load vendor reference files on the first business day of the month — "
+        "vendors restate prices overnight; wait for the second run at 11:00.")
+    reg.close(gap.id, "Arun Verma", fname)
+    assert reg.get(gap.id).status == "closed"
+    after = kai.answer(q)
+    assert not after.abstained and any(fname in c for c in after.citations)
+    assert "11:00" in after.text                          # mined knowledge now serves
+    board.uncoach_all(index)
+
+
+def test_sme_credit_ledger_flips_hoarding_to_teaching(index, tmp_path):
+    import board
+    import gaps
+    board.uncoach_all(index)
+    reg = gaps.GapRegister(path=tmp_path / "g.json")
+    gap = reg.record("What is the vendor file cutover rule?", "no grounding")
+    fname = board.author_skill(index, gap, "Sofia Lindqvist",
+                               "Cutover happens on the 11:00 second run.")
+    sofia = next(r for r in board.teachers_of_the_sprint() if r["SME"] == "Sofia Lindqvist")
+    assert sofia["Skills coached"] == 1 and sofia["Citations served"] == 0
+    board.credit_citations([f"{fname}#0", "runbook_dq_rules.md#1"])   # only Skills credit
+    sofia = next(r for r in board.teachers_of_the_sprint() if r["SME"] == "Sofia Lindqvist")
+    assert sofia["Citations served"] == 1
+    board.uncoach_all(index)
+
+
+# ── v2.0 · ACL + freshness realism ────────────────────────────────────────────
+def test_acl_scope_refusal(kai):
+    out = kai.answer("What is the salary band for the Senior Data Engineer role?")
+    assert out.abstained and out.acl_blocked
+    assert "scope" in out.escalation.lower() and not out.citations
+
+
+def test_superseded_runbook_excluded_from_retrieval(index, kai):
+    assert "runbook_escalation_contacts_2025.md" in index.superseded
+    assert not any(i.startswith("runbook_escalation_contacts_2025") for i in index.ids)
+    out = kai.answer("Where do I raise the escalation for a reconciliation BREACH "
+                     "per the escalation contacts runbook?")
+    assert "RRO-1" in out.text
+    assert any("escalation_contacts_2026" in c for c in out.citations)
+    assert not any("escalation_contacts_2025" in c for c in out.citations)
+
+
+# ── v2.0 · team impact + retro artifacts ──────────────────────────────────────
+def test_team_impact_returns_hours_per_human():
+    rows = be.team_impact(be.simulate(90, "Turnaround"))
+    assert {r["Who"] for r in rows} >= {"Priya Raghavan", "Arun Verma", "Sofia Lindqvist"}
+    assert sum(r["Hours returned"] for r in rows) > 0
+    assert all("Before Kai (doer)" in r and "With Kai (reviewer)" in r for r in rows)
+
+
+def test_contribution_log_and_copresentation(world):
+    import board
+    board.reset_logs()
+    board.log_contribution("qa", "shadow", "answered: test question")
+    board.log_contribution("escalation", "T-104", "escalated: unknown system")
+    log = board.contribution_log()
+    assert len(log) == 2 and log[0]["kind"] == "qa"
+    md = board.co_presentation()
+    assert "Co-presentation" in md and "T-104" in md and "Escalations" in md
+    board.reset_logs()
+
+
+def test_retrieval_scorecard_covers_golden_qa(index):
+    from evals import retrieval_scorecard
+    rows = retrieval_scorecard(index)
+    assert len(rows) >= 8                                  # all golden Q&A queries
+    assert any(r["Expected"].startswith("abstain") for r in rows)
+    assert all(0.0 <= r["Score"] <= 1.0 for r in rows)

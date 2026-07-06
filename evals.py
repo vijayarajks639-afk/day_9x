@@ -59,6 +59,23 @@ def _grade_task(teammate, cls, case) -> tuple[bool, str]:
     return (not missing, "" if not missing else f"missing {missing}")
 
 
+def retrieval_scorecard(index) -> list[dict]:
+    """v2.0 (D9X-24): does the RIGHT knowledge surface? One row per golden Q&A
+    query — top chunk, cosine score, abstain flag vs expectation. ~70% of
+    production RAG teams run no retrieval evaluation at all; we refuse to be one."""
+    rows = []
+    for case in _load_golden()["runbook_qa"]:
+        hits, abstained = index.grounded(case["q"])
+        top_id, score = (hits[0][0], hits[0][2]) if hits else ("—", 0.0)
+        expected = ("abstain (ACL)" if case.get("acl")
+                    else "abstain" if case.get("abstain")
+                    else f"cite {case.get('must_cite', '?')}")
+        rows.append({"Query": case["q"], "Top chunk": top_id,
+                     "Score": round(score, 2), "Abstained": abstained,
+                     "Expected": expected})
+    return rows
+
+
 def run_evals(teammate) -> dict:
     """Grade every class. Returns cls -> {passed, total, rate, gate, green, details}."""
     golden = _load_golden()

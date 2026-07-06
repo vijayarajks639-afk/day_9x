@@ -3,6 +3,45 @@
 All notable changes to the day_9x prototype. Versions follow the delivery decisions
 recorded on the D9X board (`JIRA_STATUS.md`); v0.1 is frozen as tagged.
 
+## v2.0 — 2026-07-06 — "the knowledge miner"
+
+Closes the six gaps found auditing v0.1 against the research dossier in
+`Projects/enterprise_ai_pov/` (POV §4/§7; EVIDENCE C6/C8/D3/D4/D10). Built across
+build-sprints 3–4 (D9X-16…D9X-26).
+
+- **Knowledge-gap register** (`gaps.py`, G1): every abstain/escalation is persisted as a
+  structured mining lead (`data/gaps.json`, deduped), surfaced on the Shadow tab —
+  nothing Kai can't answer is silently lost.
+- **Kai's SME interview loop** (G1, the second money shot): Kai turns an open gap into
+  interview questions; the SME answers; Kai writes a **versioned, attributed Skill**
+  (`Coached by <SME>, <date>, v1 — captured by Kai's interview, source gap G-00N`) and
+  reindexes, so the once-unanswerable question now answers with a citation. Grounds the
+  POV's "our prototype opportunity" (agent-led externalization, arXiv 2507.03811).
+- **SME credit ledger** (`board.py`, G2): per-SME Skills-coached + citations-served,
+  shown as "Teachers of the sprint" — attribution as the incentive that flips the
+  35%-hoard instinct into teaching.
+- **Staleness + ACL realism** (`rag.py` + `agent.py`, G4): a `Supersedes:` freshness rule
+  excludes the retired 2025 escalation runbook from the index; an ACL check refuses
+  salary/HR questions with a least-privilege message and escalates (a badge, not the
+  master key).
+- **Team-impact panel** (`breakeven.py`, G3): analyst-hours returned per named human,
+  doer→reviewer shift, 48%-vs-19% energization, written stays-human list — the
+  52%-job-fear stat answered in the product, not just the pitch.
+- **Contribution log + retro co-presentation** (`board.py`, G5): Kai's actions persist to
+  `data/contribution_log.json`; a downloadable sprint-review co-presentation artifact.
+- **Retrieval-eval scorecard** (`evals.py`, C8): per-golden-query top chunk + cosine +
+  abstain flag on the Probation tab — we refuse to be one of the ~70% of RAG teams that
+  run no retrieval evals.
+- Golden set grew to 9 runbook_qa cases (adds the freshness RRO-1 case + the ACL salary
+  case). **Eval contract preserved**: uncoached still fails exactly the 2 culture cases
+  (Thursday → 8/9; 2% → dq_rule_authoring); coached all green. **23/23 pytest** green.
+- Deck regenerated to 13 slides (adds: the miner, Teachers of the sprint, one-team impact).
+  Independent partner-agent review documented in `REVIEW_v2.md` (D9X-26). Token usage
+  tracked per sprint in `TOKEN_USAGE.md`.
+
+Still blocked on a human credential (carried from v0.1): **D9X-13** GitHub push,
+**D9X-14** HF Space deploy.
+
 ## v0.1 — 2026-07-05 (frozen)
 
 The first complete delivery: **Onboarding Your First AI Teammate**, the Watkins-grounded

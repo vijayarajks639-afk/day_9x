@@ -9,7 +9,9 @@ Sync to Jira via UI, or provide a token and I'll push it via the REST API.
 data-ops scrum team, modelled mechanism-by-mechanism on Watkins' *The First 90 Days*. Interview
 asset for the Anthropic Applied AI / Solutions Architect application ([[project-anthropic-application]]).
 
-_Last updated: 2026-07-05 (v0.1 frozen; v2.0 Sprints 3–4 opened — gap-analysis-driven "knowledge miner" release)_
+_Last updated: 2026-07-06 (v2.0 "knowledge miner" built, reviewed & fixed — 23/23 tests green,
+eval contract preserved, deck v2; D9X-26 review SHIP-WITH-FIXES, all findings applied (D9X-27);
+ready to tag v2.0; GitHub/HF push still blocked on credentials)_
 
 > **Upload to Jira:** import `JIRA_IMPORT.csv` (Jira Cloud → Filters/Board → *Import issues from CSV*).
 > It carries Issue Key, Type, Summary, Description, Sprint, Status, Epic Link, and AI-actual
@@ -56,21 +58,38 @@ G4 staleness/ACL realism · G5 ritual artifacts · G6 workflow-redesign slide).
 
 | Key | Story | Status | AI worklog |
 |---|---|---|---|
-| D9X-16 | Freeze v0.1: CHANGELOG, version stamp (config/app/README), local git tag | ⚪ To Do | — |
-| D9X-17 | Gap register (`gaps.py` + data/gaps.json + Knowledge-gaps panel) [G1 substrate] | ⚪ To Do | — |
-| D9X-18 | Interview agent: gap → SME interview → authored, attributed Skill → reindex [G1] | ⚪ To Do | — |
-| D9X-19 | SME credit ledger: Skills coached / citations served per SME ("Teachers of the sprint") [G2] | ⚪ To Do | — |
-| D9X-20 | Staleness (v1/v2 runbook conflict, freshness-aware) + ACL scope enforcement [G4] | ⚪ To Do | — |
+| D9X-16 | Freeze v0.1: CHANGELOG, version stamp (config/app/README), local git tag | ✅ Done | 20 |
+| D9X-17 | Gap register (`gaps.py` + data/gaps.json + Knowledge-gaps panel) [G1 substrate] | ✅ Done | 30 |
+| D9X-18 | Interview agent: gap → SME interview → authored, attributed Skill → reindex [G1] | ✅ Done | 40 |
+| D9X-19 | SME credit ledger: Skills coached / citations served per SME ("Teachers of the sprint") [G2] | ✅ Done | 25 |
+| D9X-20 | Staleness (v1/v2 runbook conflict, freshness-aware) + ACL scope enforcement [G4] | ✅ Done | 35 |
+
+**Sprint 3 verification:** the eval before/after contract is preserved — uncoached still fails
+exactly the 2 culture cases (Thursday → runbook_qa 8/9 = 89% < 90%; 2% → dq_rule_authoring
+3/4 = 75%); the new freshness (RRO-1) and ACL (salary) cases pass GREEN throughout, because they
+are realism, not the teaching moment. Coached → all GREEN.
 
 ## Sprint 4 — v2.0 "one team" & ship
 
 | Key | Story | Status | AI worklog |
 |---|---|---|---|
-| D9X-21 | Team impact panel: hours returned, doer→reviewer shift, energization contrast [G3] | ⚪ To Do | — |
-| D9X-22 | Contribution log + retro view + sprint-review co-presentation artifact [G5] | ⚪ To Do | — |
-| D9X-23 | Extend test_day9x.py (gap capture, interview roundtrip, credit, ACL, freshness) | ⚪ To Do | — |
-| D9X-24 | Extend evals (interview-loop golden cases) + retrieval-eval scorecard [C8] | ⚪ To Do | — |
-| D9X-25 | Docs + deck v2 (two money shots; G6 workflow slide) + JIRA_IMPORT.csv append | ⚪ To Do | — |
+| D9X-21 | Team impact panel: hours returned, doer→reviewer shift, energization contrast [G3] | ✅ Done | 25 |
+| D9X-22 | Contribution log + retro view + sprint-review co-presentation artifact [G5] | ✅ Done | 30 |
+| D9X-23 | Extend test_day9x.py (gap capture, interview roundtrip, credit, ACL, freshness) | ✅ Done (23/23 green) | 30 |
+| D9X-24 | Extend evals (interview-loop golden cases) + retrieval-eval scorecard [C8] | ✅ Done | 35 |
+| D9X-25 | Docs + deck v2 (13 slides, two money shots + one-team) + JIRA_IMPORT.csv append | ✅ Done | 30 |
+| D9X-26 | **Independent review pass**: partner agent audits v2.0 (code + tests + honesty of claims), documents outcomes in REVIEW_v2.md | ✅ Done | — (partner Opus review agent) |
+| D9X-27 | Apply review findings: M1 gap-seed + honest app/walkthrough copy, m1 (2025 label), m2 boot reset, n1 ASCII; re-verify (23/23 tests, eval contract, e2e) | ✅ Done | 25 |
+
+**v2.0 burn-up:** 12/12 Sprint 3–4 stories Done · review **SHIP-WITH-FIXES**, all findings
+applied & re-verified ·  **AI-actual (v2.0): ~325 min** · partner-agent tokens tracked in
+`TOKEN_USAGE.md`. Carried blocked (external credential): **D9X-13** GitHub push, **D9X-14** HF deploy.
+
+**Review outcome (D9X-26 → REVIEW_v2.md):** verdict SHIP-WITH-FIXES; zero code blockers, 23/23
+tests, eval contract exact. One Major (M1, doc/app copy: the Thursday question answers-but-wrong
+rather than abstaining — gap-mining money-shot re-seeded on a genuinely-ungrounded question) +
+2 Minors (m1 label, m2 boot reset) + 1 nit (n1 ASCII). All fixed in D9X-27; G6 confirmed
+Partial-by-design (framing/deck, not a product mechanism).
 
 ## Sprint cadence (documented for the D9X board)
 

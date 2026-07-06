@@ -38,14 +38,27 @@ def embed(texts):
     return vecs / np.clip(norms, 1e-8, None)
 
 
+# v2.0 freshness rule: a doc may declare "Supersedes: <other.md>" — the stale
+# version is then EXCLUDED from the index. Similarity search happily retrieves
+# retired policy (the classic enterprise-RAG failure mode); version authority
+# has to be explicit, not left to cosine similarity.
+SUPERSEDES_RE = re.compile(r"(?im)^supersedes:\s*(\S+\.md)\s*$")
+
+
 def load_corpus():
-    """Runbooks + coached Skills -> list of (filename, text). Skills join the corpus
-    only once an SME has written them (data/skills/) — coaching is explicit work."""
+    """Runbooks + coached Skills -> ([(filename, text)], superseded).
+    Skills join the corpus only once an SME has written them (data/skills/) —
+    coaching is explicit work. superseded maps stale doc -> the doc replacing it."""
     docs = [(p.name, p.read_text(encoding="utf-8"))
             for p in sorted(config.RUNBOOKS_DIR.glob("*.md"))]
     docs += [(p.name, p.read_text(encoding="utf-8"))
              for p in sorted(config.SKILLS_DIR.glob("*.md"))]
-    return docs
+    superseded = {}
+    for name, text in docs:
+        m = SUPERSEDES_RE.search(text)
+        if m:
+            superseded[m.group(1)] = name
+    return [(n, t) for n, t in docs if n not in superseded], superseded
 
 
 def _split_sections(text):
@@ -86,10 +99,12 @@ class Index:
 
     def __init__(self):
         self.ids, self.texts, self.vecs = [], [], None
+        self.superseded = {}     # stale doc -> the doc that replaced it (freshness rule)
 
     def build(self):
         ids, texts = [], []
-        for name, text in load_corpus():
+        docs, self.superseded = load_corpus()
+        for name, text in docs:
             # contextual chunk headers: a tiny section like "## Tolerance" can't be
             # found by cosine similarity on its own — prefixing the document title
             # gives every chunk enough context to compete. Bare title-only chunks

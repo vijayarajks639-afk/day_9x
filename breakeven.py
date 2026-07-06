@@ -121,6 +121,35 @@ def simulate(duration: int = config.DEFAULT_DURATION_DAYS,
     return entries
 
 
+# ── Team impact (v2.0, D9X-21): what each HUMAN gets back ─────────────────────
+# The 52%-fear answer belongs in the product, not the narrative: show every named
+# teammate the hours returned and the doer→reviewer shift. Where AI is embedded
+# well, 48% of workers report feeling energized vs 19% without (Adaptavist, 2025).
+IMPACT_OWNERS = {
+    "ticket_triage": ("Priya Raghavan", "triages every incoming incident by hand",
+                      "reviews Kai's triage in minutes; owns the judgement calls"),
+    "recon_check": ("Arun Verma", "works every recon break end-to-end",
+                    "adjudicates only the breaks Kai flags; owns the breach calls"),
+    "dq_rule_authoring": ("Sofia Lindqvist", "drafts every DQ rule from scratch",
+                          "signs off Kai's drafts; owns the conventions"),
+    "runbook_qa": ("Whole team", "answers 'how do we…' interruptions all day",
+                   "curates the corpus Kai cites; teaches the unwritten rules"),
+}
+
+
+def team_impact(entries: list[Entry]) -> list[dict]:
+    """Per-human rows: hours returned vs review hours invested, and the role shift."""
+    rows = []
+    for cls, (who, before, after) in IMPACT_OWNERS.items():
+        created = sum(e.created for e in entries if e.cls == cls) / 60
+        consumed = sum(e.consumed for e in entries if e.cls == cls) / 60
+        rows.append({"Who": who, "Task class": config.TASK_CLASSES[cls]["label"],
+                     "Before Kai (doer)": before, "With Kai (reviewer)": after,
+                     "Hours returned": round(created, 1),
+                     "Hours invested (review/audit)": round(consumed, 1)})
+    return rows
+
+
 # ── Day-9x checkpoint reports ─────────────────────────────────────────────────
 def checkpoint_report(entries: list[Entry], day: int, duration: int,
                       stars_key: str) -> str:

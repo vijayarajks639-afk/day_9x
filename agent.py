@@ -32,6 +32,8 @@ class Output:
     label: str = config.LABEL_DETERMINISTIC
     abstained: bool = False
     escalation: str = ""                             # non-empty => needs a human
+    acl_blocked: bool = False                        # refused on SCOPE, not on knowledge —
+                                                     # an ACL refusal is NOT a knowledge gap
 
 
 # ── Optional Haiku enrichment (local-key only; never on the public Space) ─────
@@ -57,8 +59,24 @@ class Teammate:
     def __init__(self, index):
         self.index = index
 
+    # ── ACL: the charter's resource scopes, enforced (v2.0, D9X-20) ──────────
+    def _acl_check(self, question: str) -> Output | None:
+        if any(t in question.lower() for t in config.ACL_BLOCKED_TOPICS):
+            return Output(
+                text=("That topic is outside my resource scopes (least-privilege "
+                      "charter: runbooks, backlog, recon figures, DQ rules — no HR "
+                      "or compensation data). I can't retrieve it and won't guess; "
+                      "please ask Daniel Osei (Engineering Manager)."),
+                label=config.LABEL_ABSTAIN, abstained=True, acl_blocked=True,
+                escalation="ACL: outside charter resource scopes — routed to a human, "
+                           "by design (a badge, not the master key).")
+        return None
+
     # ── Shadow mode: grounded Q&A ────────────────────────────────────────────
     def answer(self, question: str) -> Output:
+        blocked = self._acl_check(question)
+        if blocked:
+            return blocked
         hits, abstained = self.index.grounded(question)
         if abstained:
             return Output(
@@ -182,6 +200,33 @@ class Teammate:
         """True once the unwritten-rules Skill has been coached into the corpus."""
         return any("2%" in p.read_text(encoding="utf-8")
                    for p in config.SKILLS_DIR.glob("*.md"))
+
+    # ── The knowledge miner (v2.0, D9X-18): Kai interviews the SME ────────────
+    def interview_questions(self, gap) -> list[str]:
+        """Turn an open knowledge gap into 2–3 SME interview questions.
+        Deterministic $0 backbone; a local key lets Haiku sharpen the wording.
+        This is the agent-led externalization loop: Kai asks, the human teaches,
+        the answer becomes a cited, versioned Skill (board.author_skill)."""
+        base = [
+            (f'When I was asked "{gap.question}" I had no grounding in any '
+             "runbook or Skill. What's the rule or context I'm missing?"),
+            ("When does it apply - always, on specific days, at month-end - and "
+             "who owns this knowledge today?"),
+            ("What goes wrong if I follow only the documented runbooks here, and "
+             "what should I do instead?"),
+        ]
+        llm = _haiku(
+            "You are Kai, an AI teammate interviewing a human SME to capture "
+            "undocumented team knowledge. Sharpen these three interview questions "
+            "for this specific gap. Return exactly three lines, one question per "
+            f"line, no numbering.\n\nGap: {gap.question}\n"
+            f"My hypothesis: {gap.hypothesis}\n\n" + "\n".join(base))
+        if llm:
+            lines = [l.strip("-•0123456789. ").strip()
+                     for l in llm.splitlines() if l.strip()]
+            if len(lines) >= 3:
+                return lines[:3]
+        return base
 
 
 def load_backlog() -> list[dict]:

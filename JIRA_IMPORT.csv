@@ -11,8 +11,8 @@ D9X-9,Story,Breakeven ledger + day-9x checkpoint reports,"Value consumed vs crea
 D9X-10,Story,Streamlit assembly (5 tabs + duration control + STARS selector),"Charter / Shadow / Early wins / Probation review / Breakeven+Retro; hiring-manager sidebar.",Sprint 2,Done,D9X-1,40
 D9X-11,Story,Unit tests + QA run,"test_day9x.py: 15 tests green (sprint math, agent backbone, escalation, trust machine, coaching loop, breakeven).",Sprint 2,Done,D9X-1,25
 D9X-12,Story,README (HF front-matter + Watkins credit) + DEPLOY_HF + PROMPTS_LOG + retro,"Docs complete; POV/STORY pointers.",Sprint 2,Done,D9X-1,25
-D9X-13,Story,Push all commits to GitHub,"Needs GitHub PAT at push time — deliberately not stored.",Sprint 2,Blocked,D9X-1,
-D9X-14,Story,Deploy to HuggingFace Spaces (public $0 keyless),"Needs HF token; follows the push. Never set ANTHROPIC_API_KEY as a secret on a public Space.",Sprint 2,Blocked,D9X-1,
+D9X-13,Story,Push all commits to GitHub,"Needs GitHub PAT at push time — deliberately not stored.",Sprint 2,Done,D9X-1,
+D9X-14,Story,Deploy to HuggingFace Spaces (public $0 keyless),"Needs HF token; follows the push. Never set ANTHROPIC_API_KEY as a secret on a public Space.",Sprint 2,Done,D9X-1,
 D9X-15,Story,Demo walkthrough script + SPRINT_RETRO + stakeholder PPT,"DEMO_WALKTHROUGH.md, SPRINT_RETRO.md, and make_deck.py -> day_9x_stakeholder_deck.pptx.",Sprint 2,Done,D9X-1,30
 D9X-16,Story,Freeze v0.1 (CHANGELOG + version stamp + local git tag),"CHANGELOG.md, version stamp in config/app/README, local git tag v0.1; documents the six known gaps at freeze (G1-G6).",Sprint 3,Done,D9X-1,20
 D9X-17,Story,Gap register (gaps.py + data/gaps.json + Knowledge-gaps panel),"Every abstained answer or escalation persists as a structured knowledge gap (G-001..., question, hypothesis, status open->closed). Knowledge-gaps panel on the Shadow tab. [G1 substrate]",Sprint 3,Done,D9X-1,30

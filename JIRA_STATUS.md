@@ -9,17 +9,19 @@ Sync to Jira via UI, or provide a token and I'll push it via the REST API.
 data-ops scrum team, modelled mechanism-by-mechanism on Watkins' *The First 90 Days*. Interview
 asset for the Anthropic Applied AI / Solutions Architect application ([[project-anthropic-application]]).
 
-_Last updated: 2026-07-06 (v2.0 "knowledge miner" built, reviewed & fixed — 23/23 tests green,
-eval contract preserved, deck v2; D9X-26 review SHIP-WITH-FIXES, all findings applied (D9X-27);
-ready to tag v2.0; GitHub/HF push still blocked on credentials)_
+_Last updated: 2026-07-06 (**SHIPPED & LIVE**: v2.0 tagged; GitHub published
+github.com/vijayarajks639-afk/day_9x (tags v0.1 + v2.0); HF Space live at
+**huggingface.co/spaces/vijayarajks/day-9x** — Docker runtime, $0/keyless, no API key secret.
+Epic D9X-1 exit criteria all met → **Done**.)_
 
 > **Upload to Jira:** import `JIRA_IMPORT.csv` (Jira Cloud → Filters/Board → *Import issues from CSV*).
 > It carries Issue Key, Type, Summary, Description, Sprint, Status, Epic Link, and AI-actual
 > Time Spent. Or create project **D9X** (Kanban, 2 sprints) and copy the tables below.
 
 ## Epic
-- **D9X-1 — Epic: day_9x — AI teammate's first-90-days demo (Watkins-grounded)** — *In Progress*
-  (closes when tests+evals green, GitHub pushed, HF Space live)
+- **D9X-1 — Epic: day_9x — AI teammate's first-90-days demo (Watkins-grounded)** — ✅ **Done**
+  (exit criteria met 2026-07-06: 23/23 tests + evals green · GitHub pushed with tags v0.1/v2.0 ·
+  HF Space live and serving)
 
 ## Sprint 1 — the engine
 | Key | Story | Status | AI worklog |
@@ -44,8 +46,8 @@ headers) took the tiny "## Tolerance" section into the top-k. Behaves as designe
 | D9X-10 | Streamlit assembly (5 tabs + checkpoint slider + duration control) | ✅ Done | 40 |
 | D9X-11 | `test_day9x.py` unit tests + QA run | ✅ Done (15/15 green) | 25 |
 | D9X-12 | README (HF front-matter + Watkins credit) + PROMPTS_LOG + docs; POV/STORY pointers | ✅ Done | 25 |
-| D9X-13 | Push all commits to GitHub | ⏳ Blocked | — (needs GitHub PAT — deliberately not stored) |
-| D9X-14 | Deploy to HuggingFace Spaces ($0 public, keyless) | ⏳ Blocked | — (needs HF token; follows the push) |
+| D9X-13 | Push all commits to GitHub | ✅ Done | 10 (repo created via API; main + tags v0.1/v2.0 pushed; token used once, not stored) |
+| D9X-14 | Deploy to HuggingFace Spaces ($0 public, keyless) | ✅ Done | 20 (HF deprecated native Streamlit SDK → Docker runtime added; Space live, no API-key secret) |
 | D9X-15 | Demo walkthrough + SPRINT_RETRO + stakeholder PPT | ✅ Done | 30 |
 
 **Burn-up:** 13/15 stories Done · 2 Blocked (external credential) · **AI-actual total: ~410 min**.

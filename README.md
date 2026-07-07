@@ -3,9 +3,8 @@ title: day_9x — Onboarding Your First AI Teammate
 emoji: 🧑‍🚀
 colorFrom: indigo
 colorTo: green
-sdk: streamlit
-sdk_version: 1.41.0
-app_file: app.py
+sdk: docker
+app_port: 8501
 pinned: false
 license: mit
 ---

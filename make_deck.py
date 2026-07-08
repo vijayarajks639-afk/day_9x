@@ -41,7 +41,7 @@ def _live_numbers():
         out[stars] = {"breakeven": be.breakeven_day(d),
                       "net": float(d["cum_net"].iloc[-1]),
                       "dip": float(d["cum_net"].min())}
-    # v2.0 team-impact: analyst-hours Kai returns to the humans over a turnaround run
+    # v2.0 team-impact: analyst-hours Arjuna returns to the humans over a turnaround run
     impact = be.team_impact(be.simulate(90, "Turnaround"))
     out["hours_returned"] = round(sum(r["Hours returned"] for r in impact), 0)
     return out
@@ -198,20 +198,20 @@ def build():
 
     # 6 · the trapped-knowledge moment
     _content(prs, "The money shot: unlocking trapped knowledge in one click", [
-        ("Ask Kai: 'Can I rerun the CreditMart load on Thursday morning?'", 0, None),
+        ("Ask Arjuna: 'Can I rerun the CreditMart load on Thursday morning?'", 0, None),
         ("Before: it can't — the 'Thursday rule' is in nobody's document, only in an SME's head. "
          "It answers from the nearest runbook and misses it.", 1, SLATE),
         ("An SME coaches the unwritten rule → it becomes a versioned, cited Skill in the corpus.", 0, None),
-        ("After: Kai answers correctly, citing unwritten_rules.md.", 1, GREEN),
+        ("After: Arjuna answers correctly, citing unwritten_rules.md.", 1, GREEN),
         ("The probation-review evals prove it objectively: two culture cases are RED until coached, "
          "then GREEN. Evals, not vibes.", 0, INDIGO),
     ], footer="Trapped knowledge → reusable Skill. This is the thesis, made demoable.")
 
     # 6b · the SECOND money shot — the knowledge miner (v2.0)
-    _content(prs, "The second money shot: Kai mines what the corpus can't answer", [
-        ("When Kai can't answer, the miss isn't lost — it's logged as a structured "
+    _content(prs, "The second money shot: Arjuna mines what the corpus can't answer", [
+        ("When Arjuna can't answer, the miss isn't lost — it's logged as a structured "
          "knowledge gap (a mining lead), never a silent hallucination.", 0, None),
-        ("Kai turns the gap into SME interview questions; the SME answers; Kai writes it "
+        ("Arjuna turns the gap into SME interview questions; the SME answers; Arjuna writes it "
          "up as a versioned, ATTRIBUTED Skill and reindexes — the question it abstained "
          "on now answers, with a citation.", 0, INDIGO),
         ("This is agent-led externalization: the 80% that was never written down gets "
@@ -261,9 +261,9 @@ def build():
     # 8b · one team — what each human gets back (v2.0)
     _content(prs, "One team — what each human gets back", [
         ("In this story the AI is the junior; the humans are the mentors, reviewers and "
-         "deciders. Every hour Kai returns is redeployed toward the review-and-judgement "
+         "deciders. Every hour Arjuna returns is redeployed toward the review-and-judgement "
          "work that was always understaffed.", 0, None),
-        (f"Over a modelled turnaround run, Kai returns ~{nums['hours_returned']:.0f} "
+        (f"Over a modelled turnaround run, Arjuna returns ~{nums['hours_returned']:.0f} "
          "analyst-hours to named teammates — Priya (triage), Arun (recon), Sofia (DQ) — who "
          "shift from doing the routine work to reviewing and directing it.", 0, INDIGO),
         ("The 'stays human' list is written down, not implied: regulatory sign-off, "

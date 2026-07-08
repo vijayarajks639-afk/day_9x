@@ -62,9 +62,9 @@ in product · G4 staleness/ACL realism · G5 ritual artifacts · G6 workflow-red
 - **Gap register** (`gaps.py` + `data/gaps.json`): every abstain/escalation persists as a
   structured knowledge gap (`G-001…`, question, hypothesis, status open→closed). Knowledge-gaps
   panel on the Shadow tab.
-- **Interview agent** (the new money shot): for an open gap, Kai drafts 3 SME interview questions
-  ($0 deterministic, optional Haiku), the user picks an SME and types the answer, and Kai writes a
-  versioned, **attributed** Skill ("Coached by <SME>, <date>, v1 — interviewed by Kai, source gap
+- **Interview agent** (the new money shot): for an open gap, Arjuna drafts 3 SME interview questions
+  ($0 deterministic, optional Haiku), the user picks an SME and types the answer, and Arjuna writes a
+  versioned, **attributed** Skill ("Coached by <SME>, <date>, v1 — interviewed by Arjuna, source gap
   G-00N"), reindexes, and closes the gap. The old one-click coach button remains as a demo shortcut.
 - **SME credit ledger**: per-SME counters (Skills coached, citations served) surfaced as
   "Teachers of the sprint."

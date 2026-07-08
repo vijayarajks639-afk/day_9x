@@ -24,7 +24,7 @@ import config
 # v2.0 registries (all under data/, reset with the coaching state)
 SKILL_AUTHORS_PATH = config.DATA_DIR / "skill_authors.json"   # skill file -> who taught it
 SME_CREDIT_PATH = config.DATA_DIR / "sme_credit.json"         # the hoarding→teaching flip
-CONTRIB_LOG_PATH = config.DATA_DIR / "contribution_log.json"  # Kai's performance file
+CONTRIB_LOG_PATH = config.DATA_DIR / "contribution_log.json"  # Arjuna's performance file
 
 
 def _load_json(path, default):
@@ -89,7 +89,7 @@ class Board:
             self.status.setdefault(t["id"], TODO)
 
     def submit_draft(self, task: dict, output) -> str:
-        """Kai hands in work. Escalations short-circuit the gate — that IS the
+        """Arjuna hands in work. Escalations short-circuit the gate — that IS the
         desired behaviour, so they never count against trust."""
         self.drafts[task["id"]] = output
         self.status[task["id"]] = ESCALATED if output.escalation else DRAFTED
@@ -141,7 +141,7 @@ def uncoach_all(index) -> None:
 
 # ── The knowledge miner (v2.0, D9X-18): gap → interview → authored Skill ──────
 def author_skill(index, gap, sme: str, answer: str) -> str:
-    """Kai writes the SME's interview answer up as a versioned, ATTRIBUTED Skill,
+    """Arjuna writes the SME's interview answer up as a versioned, ATTRIBUTED Skill,
     reindexes so it's immediately citable, closes the gap, and credits the SME.
     Attribution is the point: named credit is what flips knowledge hoarding into
     teaching (the SME is the teacher, never an extraction target)."""
@@ -150,17 +150,17 @@ def author_skill(index, gap, sme: str, answer: str) -> str:
     title = gap.question.strip().rstrip("?")
     body = (
         f"# Skill: {title}\n\n"
-        f"*(Coached by **{sme}**, {date.today().isoformat()} — v1. Captured by Kai's "
+        f"*(Coached by **{sme}**, {date.today().isoformat()} — v1. Captured by Arjuna's "
         f"SME interview, source gap {gap.id}. This knowledge lived in a person's "
         f"head, not in any runbook.)*\n\n"
         f"## The rule\n{answer.strip()}\n\n"
         f"## Applies to\n{gap.question.strip()}\n"
     )
     (config.SKILLS_DIR / fname).write_text(body, encoding="utf-8")
-    _register_author(fname, sme, f"Kai interview · {gap.id}")
+    _register_author(fname, sme, f"Arjuna interview · {gap.id}")
     index.reindex()
     log_contribution("interview_skill", fname,
-                     f"Kai interviewed {sme}; authored Skill for {gap.id}")
+                     f"Arjuna interviewed {sme}; authored Skill for {gap.id}")
     return fname
 
 
@@ -223,13 +223,13 @@ def reset_logs() -> None:
 
 def co_presentation() -> str:
     """The sprint-review co-presentation artifact (markdown): the human presents,
-    Kai's contribution log is the evidence — the mixed-team ritual, made real."""
+    Arjuna's contribution log is the evidence — the mixed-team ritual, made real."""
     log = contribution_log()
     counts = Counter(e["kind"] for e in log)
     lines = [
-        "# Sprint Review — Co-presentation (buddy + Kai)",
+        "# Sprint Review — Co-presentation (buddy + Arjuna)",
         "",
-        f"*Generated {date.today().isoformat()} from Kai's contribution log "
+        f"*Generated {date.today().isoformat()} from Arjuna's contribution log "
         f"({len(log)} entries). The human presents; this log is the evidence.*",
         "",
         "## Contribution summary",

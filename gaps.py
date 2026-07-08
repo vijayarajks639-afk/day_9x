@@ -1,6 +1,6 @@
 """D9X-17 — The knowledge-gap register (v2.0 "knowledge miner" substrate).
 
-Every time Kai abstains or escalates, the moment is no longer lost: it is recorded
+Every time Arjuna abstains or escalates, the moment is no longer lost: it is recorded
 as a structured KNOWLEDGE GAP — a mining lead. The interview loop (agent.py +
 board.py) turns an open gap into SME interview questions, an SME answer, and an
 authored, attributed Skill; closing the gap makes the knowledge retrievable.
@@ -34,8 +34,8 @@ def slugify(text: str, max_len: int = 40) -> str:
 class Gap:
     id: str
     source: str                 # "qa" (shadow question) | "task" (backlog escalation)
-    question: str               # what Kai was asked / asked to do
-    hypothesis: str             # Kai's read on WHAT knowledge is missing (the escalation text)
+    question: str               # what Arjuna was asked / asked to do
+    hypothesis: str             # Arjuna's read on WHAT knowledge is missing (the escalation text)
     created: str = field(default_factory=lambda: date.today().isoformat())
     status: str = OPEN
     sme: str = ""               # who taught it (set on close)

@@ -160,7 +160,7 @@ LABEL_ABSTAIN = "ABSTAINED — not enough grounding; escalated to a human"
 
 
 # ── ACL / least-privilege (v2.0 — the charter's resource scopes, ENFORCED) ────
-# Kai's badge is not the master key: questions touching these topics are refused
+# Arjuna's badge is not the master key: questions touching these topics are refused
 # with a scope message and escalated to a human — never answered, never guessed.
 ACL_BLOCKED_TOPICS = ["salary", "compensation", "pay band", "bonus",
                       "appraisal", "performance rating"]

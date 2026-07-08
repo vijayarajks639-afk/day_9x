@@ -21,15 +21,15 @@ onboard a new hire — modelled mechanism-by-mechanism on Michael D. Watkins' *T
 > So the real question isn't "which model" — it's **"are we a team that knows how to onboard?"**
 
 The hiring manager sets the **onboarding duration** (default **90 days = 6 sprints**, 10 stakeholder
-checkpoints); the sprint plan re-derives. The agent — "Kai" — joins a synthetic **credit-risk
+checkpoints); the sprint plan re-derives. The agent — "Arjuna" — joins a synthetic **credit-risk
 data-ops** team and moves through three trust states, gate by gate.
 
 ## The five tabs = the first 90 days
 
 | Tab | Watkins concept | What it does |
 |---|---|---|
-| **📋 Charter** | The Five Conversations + STARS | Build Kai's charter as situation / expectations / style / resources / development; a STARS selector adapts the onboarding pace; sprint snapshot + phase timeline |
-| **👀 Shadow mode** | Accelerate your learning | RAG over the team's runbooks with **citations** and an **abstain** guardrail; the **cultural-learning moment** — Kai flubs the "Thursday rule" until an SME **coaches** it into a Skill |
+| **📋 Charter** | The Five Conversations + STARS | Build Arjuna's charter as situation / expectations / style / resources / development; a STARS selector adapts the onboarding pace; sprint snapshot + phase timeline |
+| **👀 Shadow mode** | Accelerate your learning | RAG over the team's runbooks with **citations** and an **abstain** guardrail; the **cultural-learning moment** — Arjuna flubs the "Thursday rule" until an SME **coaches** it into a Skill |
 | **🎯 Early wins** | Secure early wins | Scoped 4–8h tasks behind **approval gates**; **helpful-abstain escalation** on an unknown-system trap ("raise your hand, don't guess") |
 | **🎓 Probation review** | Build your team (trust = threshold issue) | **Eval gates** per task class; two golden cases stay red until the Skill is coached — evals, not vibes |
 | **📈 Breakeven + Retro** | The breakeven point | Value **consumed vs created** in analyst-hours; the curve dips through shadow then climbs; **day-9x** stakeholder reports |
@@ -66,7 +66,7 @@ store) · **altair** · **Streamlit 1.41** · **Claude Haiku** (optional) · syn
 ## Versions
 
 See [CHANGELOG.md](CHANGELOG.md). **v0.1** (frozen, tag `v0.1`) = the Watkins 90-days demo.
-**v2.0** = the knowledge-miner release: gap register, Kai-led SME interviews → authored Skills,
+**v2.0** = the knowledge-miner release: gap register, Arjuna-led SME interviews → authored Skills,
 SME credit ledger, staleness + ACL realism, team-impact panel, contribution log + retro artifacts.
 
 ## Attribution

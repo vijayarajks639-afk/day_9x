@@ -30,7 +30,7 @@ written; interview for what isn't.*
   refuses to hallucinate. Silent confident wrongness is the failure mode we're preventing."
 
 **The confident-but-wrong trap (20s).**
-- Ask **"Can I rerun the CreditMart load on Thursday morning?"** → Kai gives a **confident answer
+- Ask **"Can I rerun the CreditMart load on Thursday morning?"** → Arjuna gives a **confident answer
   from the nearest recon runbook** and **silently omits the Thursday rule** — that rule is in
   nobody's document, only in people's heads.
   > "This is the failure mode we actually fear — not a refusal, a *plausible* answer missing the one
@@ -47,28 +47,28 @@ written; interview for what isn't.*
 
 **Nothing is ever lost — the gap register (20s).**
 - Ask **"Is it ever unsafe to rerun a load, and when?"** → **no runbook covers it** (this is tacit
-  knowledge), so Kai **abstains and escalates** honestly instead of guessing.
+  knowledge), so Arjuna **abstains and escalates** honestly instead of guessing.
 - Scroll to the **Knowledge gaps** panel: that abstain just became a **structured gap**,
   e.g. `G-001 — "Is it ever unsafe to rerun a load, and when?" · status: open`.
-  > "Watch what didn't happen: the answer wasn't lost. **Nothing Kai can't answer disappears —
+  > "Watch what didn't happen: the answer wasn't lost. **Nothing Arjuna can't answer disappears —
   > it becomes a mining lead.** Every abstain is now a work item with a hypothesis and a status."
 
 **Money shot #2 — the interview agent (65s). This is the new heart of the demo.**
-- In the **Knowledge gaps** panel, pick the open gap. Kai **immediately drafts 3 targeted interview
+- In the **Knowledge gaps** panel, pick the open gap. Arjuna **immediately drafts 3 targeted interview
   questions** (deterministic, $0 — optional Haiku enrichment), e.g. *"When does it apply — always, on
   specific days, at month-end — and who owns this knowledge today?"*
-  > "Tacit knowledge isn't downloadable — externalizing it is a *conversation*. So Kai doesn't
+  > "Tacit knowledge isn't downloadable — externalizing it is a *conversation*. So Arjuna doesn't
   > scrape the SME; it **asks**."
 - Choose the SME from the roster — **Arun Verma (SME — Reconciliation)** owns the Finance GL-Hub
   pain, so he's the right human (he's the default). Type his answer into the form and click
-  **"✍️ Kai: write it up as a Skill"**:
+  **"✍️ Arjuna: write it up as a Skill"**:
   *"Never rerun a load on Thursday mornings — Finance runs the GL-Hub reconciliation then, and a
   mid-window rerun creates phantom breaks that cost me half a day to unwind. Reruns wait until
   after 13:00."*
-- Kai writes it up as a **versioned Skill markdown** with attribution —
-  *"Coached by **Arun Verma**, 2026-07-06 — v1. Captured by Kai's SME interview, source gap G-001"* —
+- Arjuna writes it up as a **versioned Skill markdown** with attribution —
+  *"Coached by **Arun Verma**, 2026-07-06 — v1. Captured by Arjuna's SME interview, source gap G-001"* —
   **reindexes the corpus, and closes the gap** (status open → closed).
-- Re-ask **"Is it ever unsafe to rerun a load, and when?"** → now Kai **answers with the new
+- Re-ask **"Is it ever unsafe to rerun a load, and when?"** → now Arjuna **answers with the new
   citation**. Check **"Teachers of the sprint"** — **Arun's counter increments** (1 Skill coached).
   > "That's the loop the whole industry talks about and almost nobody demos: an agent noticed a
   > gap, interviewed the human who had the answer, and wrote it back **credited**. And attribution
@@ -76,21 +76,21 @@ written; interview for what isn't.*
   > their knowledge into teachers who want the credit.**"
 
 **Freshness — the archivist knows the latest will (20s).**
-- Ask **"Who do I escalate a RegReport incident to right now?"** → Kai cites the **2026 escalation
+- Ask **"Who do I escalate a RegReport incident to right now?"** → Arjuna cites the **2026 escalation
   runbook** and the UI shows the **v1 (2025) runbook excluded as superseded**.
   > "A vector database happily retrieves last year's on-call contacts. Ours doesn't. The v2 runbook
   > declares it *supersedes* the v1, and retrieval **drops the stale one**. Staleness is one of the
   > five things that kill enterprise RAG — we handle it in the open."
 
 **Access control — least privilege (15s).**
-- Ask **"What's Priya's salary?"** (or any comp/appraisal question) → Kai **refuses** with a
+- Ask **"What's Priya's salary?"** (or any comp/appraisal question) → Arjuna **refuses** with a
   least-privilege message referencing the **charter's resource scopes**, and escalates instead of answering.
   > "Out-of-scope by design. At bank scale, ACLs and authority resolution *are* the architecture —
-  > so a question outside Kai's charter gets a refusal, not a guess."
+  > so a question outside Arjuna's charter gets a refusal, not a guess."
 
 ## 3 · Early-wins tab (60s) — *scoped work behind gates*
 - Draft **T-101 (RegReport nulls)** → SEV1 → Risk-Reg-Ops, with rationale + citation. **Approve** it.
-- Draft **T-104 (OrionLedger)** → Kai **escalates**: unknown system, "raise my hand, don't guess."
+- Draft **T-104 (OrionLedger)** → Arjuna **escalates**: unknown system, "raise my hand, don't guess."
   "That escalation is the behaviour that separates a teammate from a tool — *and* it lands as a
   fresh gap in the register, another interview lead for later."
 
@@ -113,7 +113,7 @@ written; interview for what isn't.*
   > "This is the answer to the fear — in the product, not the pitch. Nobody's hours got taken;
   > Priya's got *returned*, and her role moved from doer to reviewer. Where AI is embedded well,
   > 48% of people feel energized versus 19% without."
-- Open the **retro view** and click **Download sprint-review co-presentation**: Kai's
+- Open the **retro view** and click **Download sprint-review co-presentation**: Arjuna's
   **contribution log** (drafts, approvals, rejections, escalations, interviews, coaching) renders
   as a markdown the team **co-presents** at sprint review. "The Scrum.org ritual for a mixed
   human/agent team — the retro reads the agent's footprint, and a human always presents it."

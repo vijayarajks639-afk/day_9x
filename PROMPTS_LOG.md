@@ -43,7 +43,7 @@ realism · G5 thin ritual artifacts · G6 workflow redesign implicit). v0.1 froz
 CHANGELOG); v2.0 built as Sprints 3–4 (D9X-16…D9X-25).
 
 **"Build the required Skill for this project like knowledge miner, and others."** → the interview
-loop is the headline: Kai turns a knowledge gap into SME interview questions, the SME answers, Kai
+loop is the headline: Arjuna turns a knowledge gap into SME interview questions, the SME answers, Arjuna
 writes it up as a **versioned, attributed Skill** and reindexes — the POV's "our prototype
 opportunity" (agent-led externalization, arXiv 2507.03811, 94.9% recall in simulation), plus the
 SME credit ledger ("Teachers of the sprint") that makes attribution the incentive.

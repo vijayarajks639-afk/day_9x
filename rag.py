@@ -4,7 +4,7 @@ The AI teammate's "reading": structure-aware chunking of the team's runbooks PLU
 coached Skills, local embeddings (fastembed/ONNX — nothing leaves the machine), a
 transparent numpy cosine index, and the abstain guardrail.
 
-The Watkins point this encodes: Kai's TECHNICAL learning is instant (it reads every
+The Watkins point this encodes: Arjuna's TECHNICAL learning is instant (it reads every
 runbook before Monday), but CULTURAL knowledge only enters the index when a human
 coaches it into data/skills/ — after which reindex() makes it retrievable.
 """

@@ -106,7 +106,7 @@ question (it answers, wrongly, which is the eval's teaching moment — not the g
 
 ### Minor
 **m1 — Freshness beat mislabels the superseded runbook as "2024".**
-`DEMO_WALKTHROUGH.md:68-69` says Kai "shows the **v1 (2024)** runbook excluded as superseded." The
+`DEMO_WALKTHROUGH.md:68-69` says Arjuna "shows the **v1 (2024)** runbook excluded as superseded." The
 file is `runbook_escalation_contacts_2025.md`, "*Last updated: 2025-03-10*" (`generate_data.py:150`),
 and the UI caption (`app.py:169-171`) prints `runbook_escalation_contacts_2025.md`. *Fix:* change
 "(2024)" to "(2025)". (The beat itself is real — I confirmed the 2026 runbook is cited and the 2025
@@ -165,12 +165,12 @@ not vanity coverage.
    do nothing. Fix the walkthrough (seed from T-104) and rehearse the exact click path before the room.
 2. **Stale shared state (m2).** If the Space was used before, "Teachers of the sprint" and the retro
    log may already be populated. Press **Full demo reset** first, or fix boot to auto-reset.
-3. **Confident-but-wrong Thursday answer.** Uncoached, Kai gives a plausible non-abstained answer from
+3. **Confident-but-wrong Thursday answer.** Uncoached, Arjuna gives a plausible non-abstained answer from
    an unrelated recon runbook (0.399) that omits the rule — a mild instance of the very "confident
    wrongness" the demo says it prevents. The eval catches it; a live Shadow-tab viewer does not see an
    abstain. Narrate this as "the eval catches what the eye can't," not "it refuses to answer."
 4. **Cold-start latency.** First boot downloads/loads the ~90MB fastembed model behind the
-   "Onboarding Kai…" spinner (`app.py:29`). Warm the Space before presenting.
+   "Onboarding Arjuna…" spinner (`app.py:29`). Warm the Space before presenting.
 5. **Point-in-time snapshot.** During this review the working tree received concurrent edits to
    `CHANGELOG.md`, `PROMPTS_LOG.md`, `SPRINT_RETRO.md`, `make_deck.py`, `day_9x_stakeholder_deck.pptx`,
    and a new untracked `DEPLOYMENT_PLAN.md` appeared — from another process, not this reviewer. Findings

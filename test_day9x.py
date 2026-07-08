@@ -90,7 +90,7 @@ def test_answer_cites_source(kai):
 
 # ── The coaching → retrieval loop (the core teaching moment) ───────────────────
 def test_culture_needs_coaching(index, kai):
-    # Uncoached, Kai can't answer the Thursday rule — it isn't in any runbook, so the
+    # Uncoached, Arjuna can't answer the Thursday rule — it isn't in any runbook, so the
     # answer never mentions Thursday (it retrieves the nearest doc instead). This is the
     # failure the EVAL catches (missing token), the honest teaching moment. Coaching the
     # Skill puts the rule in the corpus, and the answer then cites it.
@@ -227,7 +227,7 @@ def test_team_impact_returns_hours_per_human():
     rows = be.team_impact(be.simulate(90, "Turnaround"))
     assert {r["Who"] for r in rows} >= {"Priya Raghavan", "Arun Verma", "Sofia Lindqvist"}
     assert sum(r["Hours returned"] for r in rows) > 0
-    assert all("Before Kai (doer)" in r and "With Kai (reviewer)" in r for r in rows)
+    assert all("Before Arjuna (doer)" in r and "With Arjuna (reviewer)" in r for r in rows)
 
 
 def test_contribution_log_and_copresentation(world):

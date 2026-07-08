@@ -1,4 +1,4 @@
-"""D9X-6 — Kai, the AI teammate (agent core).
+"""D9X-6 — Arjuna, the AI teammate (agent core).
 
 Two abilities, both provenance-labelled (config.LABEL_*):
   answer(question)      shadow-mode Q&A: grounded in the index, cited, abstains
@@ -11,7 +11,7 @@ Haiku synthesis pass over the retrieved passages; the deterministic backbone and
 the citations never change.
 
 The escalation contract ("raise your hand early"): when a task references a
-system outside the glossary, or grounding is too weak, Kai does not guess — it
+system outside the glossary, or grounding is too weak, Arjuna does not guess — it
 returns WHAT it tried, WHY it is stuck, and WHAT it needs.
 """
 from __future__ import annotations
@@ -53,7 +53,7 @@ def _haiku(prompt: str) -> str | None:
 
 
 class Teammate:
-    """Kai. Holds the retrieval index + data-file paths; stateless otherwise —
+    """Arjuna. Holds the retrieval index + data-file paths; stateless otherwise —
     trust state lives on the board (board.py), not inside the agent."""
 
     def __init__(self, index):
@@ -201,11 +201,11 @@ class Teammate:
         return any("2%" in p.read_text(encoding="utf-8")
                    for p in config.SKILLS_DIR.glob("*.md"))
 
-    # ── The knowledge miner (v2.0, D9X-18): Kai interviews the SME ────────────
+    # ── The knowledge miner (v2.0, D9X-18): Arjuna interviews the SME ────────────
     def interview_questions(self, gap) -> list[str]:
         """Turn an open knowledge gap into 2–3 SME interview questions.
         Deterministic $0 backbone; a local key lets Haiku sharpen the wording.
-        This is the agent-led externalization loop: Kai asks, the human teaches,
+        This is the agent-led externalization loop: Arjuna asks, the human teaches,
         the answer becomes a cited, versioned Skill (board.author_skill)."""
         base = [
             (f'When I was asked "{gap.question}" I had no grounding in any '
@@ -216,7 +216,7 @@ class Teammate:
              "what should I do instead?"),
         ]
         llm = _haiku(
-            "You are Kai, an AI teammate interviewing a human SME to capture "
+            "You are Arjuna, an AI teammate interviewing a human SME to capture "
             "undocumented team knowledge. Sharpen these three interview questions "
             "for this specific gap. Return exactly three lines, one question per "
             f"line, no numbering.\n\nGap: {gap.question}\n"

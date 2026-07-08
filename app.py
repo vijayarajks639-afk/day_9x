@@ -26,7 +26,7 @@ PHASE_COLOR = {"SHADOW": "#6366f1", "GATED": "#0ea5e9", "AUTONOMOUS": "#10b981"}
 
 
 # ── Boot: generate world + build the index once (cached) ──────────────────────
-@st.cache_resource(show_spinner="Onboarding Kai — reading the team's runbooks…")
+@st.cache_resource(show_spinner="Onboarding Arjuna — reading the team's runbooks…")
 def boot():
     generate_data.ensure_generated()
     import rag
@@ -46,7 +46,7 @@ def boot():
     return idx, Teammate(idx), load_backlog()
 
 
-index, kai, backlog = boot()
+index, arjuna, backlog = boot()
 
 if "board" not in st.session_state:
     from board import Board
@@ -140,7 +140,7 @@ with tab_shadow:
     st.subheader("Days 1–N — shadow mode: read-only, cited, abstains")
     left, right = st.columns([3, 2])
     with left:
-        preset = st.selectbox("Ask Kai (or type your own below)", [
+        preset = st.selectbox("Ask Arjuna (or type your own below)", [
             "What severity is an incident touching RegReport, and where does it route?",
             "What is the tolerance for the daily GL-Hub vs CreditMart reconciliation?",
             "Is it ever unsafe to rerun a load, and when?",
@@ -148,9 +148,9 @@ with tab_shadow:
             "Who won the football world cup?",
         ])
         q = st.text_input("Question", value=preset)
-        if st.button("Ask Kai", type="primary"):
+        if st.button("Ask Arjuna", type="primary"):
             import board as board_mod
-            out = kai.answer(q)
+            out = arjuna.answer(q)
             badge = {config.LABEL_ABSTAIN: "🟠", config.LABEL_LLM: "🟢",
                      config.LABEL_DETERMINISTIC: "🔵"}[out.label]
             st.markdown(f"**{badge} {out.label}**")
@@ -164,11 +164,11 @@ with tab_shadow:
             elif out.escalation:
                 gap = gap_register.record(q, out.escalation, source="qa")
                 st.info(f"🙋 Escalation: {out.escalation}")
-                st.success(f"⛏️ Logged as knowledge gap **{gap.id}** — nothing Kai "
+                st.success(f"⛏️ Logged as knowledge gap **{gap.id}** — nothing Arjuna "
                            "can't answer is lost; it becomes a mining lead below.")
     with right:
         st.markdown("##### The cultural-learning moment")
-        st.write("Kai's **technical** learning is instant — it read every runbook. Its "
+        st.write("Arjuna's **technical** learning is instant — it read every runbook. Its "
                  "**cultural** learning is zero until a human encodes it. Uncoached, the "
                  "*Thursday* question gets a confident answer from the nearest recon "
                  "runbook that silently **omits the Thursday rule** — the probation eval "
@@ -185,7 +185,7 @@ with tab_shadow:
                        "until it's coached.")
         else:
             st.success("✅ Skill `unwritten_rules.md` coached into the corpus. "
-                       "Kai can now answer the Thursday question — with a citation.")
+                       "Arjuna can now answer the Thursday question — with a citation.")
         if st.button("↺ Full demo reset (skills · gaps · logs)"):
             import board as board_mod
             board_mod.uncoach_all(index)
@@ -206,12 +206,12 @@ with tab_shadow:
             st.dataframe(pd.DataFrame(teachers), hide_index=True,
                          use_container_width=True)
 
-    # ── The knowledge miner (v2.0): gap register → Kai interviews the SME ─────
+    # ── The knowledge miner (v2.0): gap register → Arjuna interviews the SME ─────
     st.divider()
-    st.markdown("#### ⛏️ Knowledge gaps — Kai mines what the corpus can't answer")
+    st.markdown("#### ⛏️ Knowledge gaps — Arjuna mines what the corpus can't answer")
     open_gaps = gap_register.open_gaps()
     if not open_gaps:
-        st.caption("No open gaps. Ask Kai something no runbook covers — try "
+        st.caption("No open gaps. Ask Arjuna something no runbook covers — try "
                    "*\"Is it ever unsafe to rerun a load, and when?\"* — and the "
                    "miss lands here as a mining lead.")
     else:
@@ -219,20 +219,20 @@ with tab_shadow:
         pick_gap = st.selectbox(
             "Open gaps", open_gaps,
             format_func=lambda g: f"{g.id} · {g.question}  ({g.status})")
-        st.caption(f"Kai's hypothesis: {pick_gap.hypothesis}")
-        st.markdown("**🎤 Kai's interview questions for the SME:**")
-        for i, iq in enumerate(kai.interview_questions(pick_gap), 1):
+        st.caption(f"Arjuna's hypothesis: {pick_gap.hypothesis}")
+        st.markdown("**🎤 Arjuna's interview questions for the SME:**")
+        for i, iq in enumerate(arjuna.interview_questions(pick_gap), 1):
             st.markdown(f"{i}. {iq}")
         with st.form(f"interview_{pick_gap.id}"):
             humans = [m["name"] for m in json.loads(
                 (config.DATA_DIR / "team.json").read_text(encoding="utf-8"))
-                if m["name"] != "Kai"]
+                if m["name"] != "Arjuna"]
             sme = st.selectbox("SME being interviewed", humans, index=3)
             answer = st.text_area(
                 "The SME's answer (type what the expert says)",
                 placeholder="e.g. Never rerun that load while Finance holds its "
                             "reconciliation window — wait until after 13:00…")
-            if st.form_submit_button("✍️ Kai: write it up as a Skill", type="primary"):
+            if st.form_submit_button("✍️ Arjuna: write it up as a Skill", type="primary"):
                 if answer.strip():
                     fname = board_mod.author_skill(index, pick_gap, sme, answer)
                     gap_register.close(pick_gap.id, sme, fname)
@@ -248,7 +248,7 @@ with tab_shadow:
 # ── TAB 3 · Early wins ────────────────────────────────────────────────────────
 with tab_wins:
     st.subheader("Days N–M — scoped tasks behind approval gates")
-    st.write("Kai drafts 4–8h verifiable tasks; the **buddy approves, rejects, or receives an "
+    st.write("Arjuna drafts 4–8h verifiable tasks; the **buddy approves, rejects, or receives an "
              "escalation**. Approvals build the per-class trust ledger. Note the deliberate "
              "unknown-system trap (T-104) — the right move is to raise its hand, not guess.")
     for t in backlog:
@@ -256,8 +256,8 @@ with tab_wins:
                          + ("  ⭐ early-win candidate" if t.get("early_win") else "")):
             st.caption(t["detail"])
             c1, c2, c3, c4 = st.columns(4)
-            if c1.button("Kai: draft", key=f"d{t['id']}"):
-                out = kai.attempt(t)
+            if c1.button("Arjuna: draft", key=f"d{t['id']}"):
+                out = arjuna.attempt(t)
                 board.submit_draft(t, out)
                 if out.escalation and not out.acl_blocked:
                     gap_register.record(t["title"], out.escalation, source="task")
@@ -290,7 +290,7 @@ with tab_review:
              "on the Shadow tab.")
     if st.button("▶️ Run probation-review evals", type="primary"):
         from evals import run_evals
-        st.session_state.evalres = run_evals(kai)
+        st.session_state.evalres = run_evals(arjuna)
     res = st.session_state.get("evalres")
     if res:
         for cls, r in res.items():
@@ -355,7 +355,7 @@ with tab_be:
     st.divider()
     st.markdown("#### 🧑‍🤝‍🧑 One team — what each human gets back")
     st.write("In this story the AI is the **junior**; the humans are the mentors, "
-             "reviewers and deciders. Every hour Kai returns is redeployed toward "
+             "reviewers and deciders. Every hour Arjuna returns is redeployed toward "
              "the review-and-judgement work that was always understaffed — where AI "
              "is embedded well, **48% of workers report feeling energized vs 19% "
              "without** (Adaptavist, 2025).")
@@ -364,9 +364,9 @@ with tab_be:
     st.caption("**Stays human — written down, not implied:** " +
                " · ".join(charter.stays_human))
 
-    # ── Retro: Kai's contribution log + co-presentation (v2.0) ────────────────
+    # ── Retro: Arjuna's contribution log + co-presentation (v2.0) ────────────────
     st.divider()
-    st.markdown("#### 📋 Retro — Kai's contribution log")
+    st.markdown("#### 📋 Retro — Arjuna's contribution log")
     import board as board_mod
     log = board_mod.contribution_log()
     if log:

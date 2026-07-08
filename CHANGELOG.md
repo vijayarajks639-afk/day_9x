@@ -11,10 +11,10 @@ build-sprints 3–4 (D9X-16…D9X-26).
 
 - **Knowledge-gap register** (`gaps.py`, G1): every abstain/escalation is persisted as a
   structured mining lead (`data/gaps.json`, deduped), surfaced on the Shadow tab —
-  nothing Kai can't answer is silently lost.
-- **Kai's SME interview loop** (G1, the second money shot): Kai turns an open gap into
-  interview questions; the SME answers; Kai writes a **versioned, attributed Skill**
-  (`Coached by <SME>, <date>, v1 — captured by Kai's interview, source gap G-00N`) and
+  nothing Arjuna can't answer is silently lost.
+- **Arjuna's SME interview loop** (G1, the second money shot): Arjuna turns an open gap into
+  interview questions; the SME answers; Arjuna writes a **versioned, attributed Skill**
+  (`Coached by <SME>, <date>, v1 — captured by Arjuna's interview, source gap G-00N`) and
   reindexes, so the once-unanswerable question now answers with a citation. Grounds the
   POV's "our prototype opportunity" (agent-led externalization, arXiv 2507.03811).
 - **SME credit ledger** (`board.py`, G2): per-SME Skills-coached + citations-served,
@@ -27,7 +27,7 @@ build-sprints 3–4 (D9X-16…D9X-26).
 - **Team-impact panel** (`breakeven.py`, G3): analyst-hours returned per named human,
   doer→reviewer shift, 48%-vs-19% energization, written stays-human list — the
   52%-job-fear stat answered in the product, not just the pitch.
-- **Contribution log + retro co-presentation** (`board.py`, G5): Kai's actions persist to
+- **Contribution log + retro co-presentation** (`board.py`, G5): Arjuna's actions persist to
   `data/contribution_log.json`; a downloadable sprint-review co-presentation artifact.
 - **Retrieval-eval scorecard** (`evals.py`, C8): per-golden-query top chunk + cosine +
   abstain flag on the Probation tab — we refuse to be one of the ~70% of RAG teams that

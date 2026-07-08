@@ -25,7 +25,7 @@ STAYS_HUMAN = [
     "Sign-off on anything entering RegReport or a regulatory submission",
     "Stakeholder communication and negotiation",
     "Ambiguous judgement calls (novel break patterns, unknown systems)",
-    "Accountability — every Kai output has a named human owner",
+    "Accountability — every Arjuna output has a named human owner",
 ]
 
 RESOURCE_SCOPES = [
@@ -140,7 +140,7 @@ class Charter:
         }
 
     def render_markdown(self) -> str:
-        parts = [f"# Agent Charter — Kai (AI teammate)\n",
+        parts = [f"# Agent Charter — Arjuna (AI teammate)\n",
                  f"*Onboarding duration: **{self.duration} days** · "
                  f"{len(sprint_snapshot(self.duration, self.stars_key))} sprints · "
                  f"{len(checkpoints(self.duration))} stakeholder checkpoints*\n"]

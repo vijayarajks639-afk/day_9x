@@ -1,0 +1,405 @@
+<style>
+  :root{
+    --paper:#eaeef3; --card:#ffffff; --card2:#f5f7fa;
+    --ink:#161a22; --muted:#5a6474; --faint:#8b95a5; --line:#d6dce4;
+    --indigo:#5457d6; --sky:#0284c7; --emerald:#0f9d6b;
+    --indigo-t:#eceafb; --sky-t:#e5f3fb; --emerald-t:#e5f5ee;
+    --accent:var(--indigo);
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:"Cascadia Code","Cascadia Mono",Consolas,"SFMono-Regular",ui-monospace,monospace;
+    --measure:66ch; --wrap:1120px;
+    --shadow-soft:0 1px 2px rgba(20,26,38,.04),0 6px 24px rgba(20,26,38,.06);
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --paper:#0e1118; --card:#161b24; --card2:#1b212c;
+      --ink:#e7ecf3; --muted:#98a2b3; --faint:#69727f; --line:#252c38;
+      --indigo:#8b90ff; --sky:#4bb8ef; --emerald:#3dd69b;
+      --indigo-t:#1a1d33; --sky-t:#0f2231; --emerald-t:#0f2a22;
+      --shadow-soft:0 1px 2px rgba(0,0,0,.3),0 8px 30px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0; background:var(--paper)}
+  .page{
+    background:var(--paper); color:var(--ink);
+    font-family:var(--sans); font-size:16.5px; line-height:1.6;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    padding:4px 22px 60px;
+  }
+  .wrap{max-width:var(--wrap); margin:0 auto}
+  .prose{max-width:var(--measure)}
+  p{margin:0 0 1em}
+  a{color:var(--accent); text-decoration:none; border-bottom:1px solid color-mix(in srgb,var(--accent) 35%,transparent)}
+  a:hover{border-bottom-color:var(--accent)}
+  h1,h2,h3{font-family:var(--serif); font-weight:600; letter-spacing:-.01em; text-wrap:balance; margin:0}
+  .eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--accent); margin:0 0 14px}
+  .mono{font-family:var(--mono)}
+
+  header.hero{border-bottom:1px solid var(--line); padding:34px 0 52px}
+  .spine{display:flex; gap:6px; margin-bottom:26px}
+  .spine i{height:6px; border-radius:3px; display:block}
+  .spine i:nth-child(1){width:34%; background:var(--indigo)}
+  .spine i:nth-child(2){width:32%; background:var(--sky)}
+  .spine i:nth-child(3){width:34%; background:var(--emerald)}
+  .hero h1{font-size:clamp(38px,6vw,66px); line-height:1; letter-spacing:-.03em}
+  .hero .tag{font-family:var(--mono); color:var(--faint); font-size:13px; letter-spacing:.04em}
+  .hero .lede{font-family:var(--serif); font-size:clamp(19px,2.4vw,25px); line-height:1.34; color:var(--ink); margin:20px 0 8px; max-width:26ch}
+  .hero .sub{max-width:54ch; color:var(--muted); font-size:17px; margin-top:16px}
+  .cta{display:flex; flex-wrap:wrap; gap:12px; margin-top:30px; align-items:center}
+  .btn{display:inline-flex; align-items:center; gap:9px; font-family:var(--sans); font-size:14.5px; font-weight:600;
+    padding:10px 16px; border-radius:9px; border:1px solid var(--line); background:var(--card); color:var(--ink);
+    box-shadow:var(--shadow-soft); transition:transform .15s ease, border-color .15s ease}
+  .btn:hover{transform:translateY(-2px); border-color:var(--accent)}
+  .btn.here{background:var(--indigo-t); border-color:color-mix(in srgb,var(--accent) 30%,transparent); color:var(--ink); cursor:default}
+  .btn .dot{width:8px; height:8px; border-radius:50%; background:var(--emerald); box-shadow:0 0 0 4px color-mix(in srgb,var(--emerald) 22%,transparent)}
+
+  section{padding:56px 0; border-bottom:1px solid var(--line)}
+  .kicker-row{display:flex; align-items:baseline; gap:16px; flex-wrap:wrap; margin-bottom:24px}
+  section h2{font-size:clamp(26px,3.6vw,38px); line-height:1.06; letter-spacing:-.02em; max-width:20ch}
+  .say{color:var(--muted); font-size:17px; max-width:var(--measure); margin-top:14px}
+
+  .reveal{opacity:0; transform:translateY(14px); transition:opacity .6s ease, transform .6s ease}
+  .reveal.in{opacity:1; transform:none}
+  @media (prefers-reduced-motion:reduce){.reveal{opacity:1; transform:none; transition:none}}
+
+  .stars-grid{display:grid; grid-template-columns:1.05fr 1.35fr; gap:32px; margin-top:30px; align-items:start}
+  .situations{display:flex; flex-direction:column; gap:8px}
+  .sit{display:flex; gap:14px; align-items:flex-start; text-align:left; width:100%; cursor:pointer;
+    background:var(--card); border:1px solid var(--line); border-radius:11px; padding:13px 15px;
+    color:var(--ink); font-family:var(--sans); transition:border-color .15s ease, transform .12s ease, background .15s ease}
+  .sit:hover{transform:translateX(3px)}
+  .sit[aria-pressed="true"]{border-color:var(--accent); background:var(--indigo-t); box-shadow:var(--shadow-soft)}
+  .sit .name{font-weight:650; font-size:15px; display:block}
+  .sit .oneline{color:var(--muted); font-size:13px; display:block; margin-top:2px}
+  .sit .mk{font-family:var(--mono); font-size:12px; color:var(--faint); flex:0 0 auto; padding-top:2px}
+
+  .panel{background:var(--card); border:1px solid var(--line); border-radius:14px; padding:22px; box-shadow:var(--shadow-soft)}
+  .panel .pname{font-family:var(--serif); font-size:21px; font-weight:600}
+  .panel .pnote{color:var(--muted); font-size:14.5px; margin:8px 0 20px; min-height:42px}
+  .bar{display:flex; height:50px; border-radius:9px; overflow:hidden; border:1px solid var(--line)}
+  .bar > span{display:flex; align-items:center; justify-content:center; color:#fff; font-family:var(--mono); font-size:12.5px; font-weight:600;
+    transition:width .5s cubic-bezier(.4,0,.2,1); min-width:0; overflow:hidden; white-space:nowrap}
+  .seg-s{background:var(--indigo)} .seg-g{background:var(--sky)} .seg-a{background:var(--emerald)}
+  .legend{display:flex; gap:18px; flex-wrap:wrap; margin-top:14px; font-size:13px; color:var(--muted)}
+  .legend b{display:inline-flex; align-items:center; gap:7px; font-weight:600; color:var(--ink)}
+  .legend .sw{width:11px; height:11px; border-radius:3px; display:inline-block}
+  .daymap{font-family:var(--mono); font-size:12.5px; color:var(--ink); margin-top:18px; padding-top:14px; border-top:1px dashed var(--line); line-height:1.7}
+  .daymap b{color:var(--accent)}
+
+  .lens{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:24px}
+  .lens .col{border:1px solid var(--line); border-radius:13px; padding:18px 20px; background:var(--card)}
+  .lens .col.biz{border-top:3px solid var(--emerald)}
+  .lens .col.tech{border-top:3px solid var(--indigo)}
+  .lens .col h4{margin:0 0 10px; font-family:var(--mono); font-size:12px; letter-spacing:.12em; text-transform:uppercase; display:flex; align-items:center; gap:8px}
+  .lens .col.biz h4{color:var(--emerald)}
+  .lens .col.tech h4{color:var(--indigo)}
+  .lens .col p{font-size:15px; margin:0}
+  .lens .col p + p{margin-top:10px}
+
+  .journey{margin-top:30px; display:flex; flex-direction:column}
+  .step{display:grid; grid-template-columns:60px 1fr; gap:20px; padding:20px 0; border-top:1px solid var(--line)}
+  .step:first-child{border-top:none}
+  .step .num{font-family:var(--serif); font-size:28px; font-weight:600; color:var(--accent); line-height:1}
+  .step .day{font-family:var(--mono); font-size:11px; color:var(--faint); margin-top:8px; letter-spacing:.04em}
+  .step h3{font-size:19px; margin-bottom:6px}
+  .step .role{font-family:var(--mono); font-size:12px; color:var(--muted); margin-bottom:10px}
+  .step .biz-line{font-size:15.5px; margin:0 0 6px}
+  .step .tech-line{font-size:14px; color:var(--muted); margin:0}
+  .step .tech-line b{color:var(--ink); font-weight:600}
+
+  .ladder{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:26px}
+  .rung{border:1px solid var(--line); border-radius:13px; padding:19px; background:var(--card); position:relative; overflow:hidden}
+  .rung::before{content:""; position:absolute; inset:0 auto 0 0; width:4px}
+  .rung.s::before{background:var(--indigo)} .rung.g::before{background:var(--sky)} .rung.a::before{background:var(--emerald)}
+  .rung .state{font-family:var(--mono); font-size:12px; letter-spacing:.1em; font-weight:700}
+  .rung.s .state{color:var(--indigo)} .rung.g .state{color:var(--sky)} .rung.a .state{color:var(--emerald)}
+  .rung .what{font-family:var(--serif); font-size:18px; margin:8px 0 8px}
+  .rung p{font-size:14px; color:var(--muted); margin:0}
+  .arrowrow{display:flex; align-items:center; gap:10px; margin-top:16px; font-family:var(--mono); font-size:13px; color:var(--muted); flex-wrap:wrap}
+  .arrowrow .k{color:var(--ink); font-weight:600}
+
+  .feature{background:var(--card2); border:1px solid var(--line); border-radius:16px; padding:28px; margin-top:24px}
+  .flow{display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-top:18px; font-family:var(--mono); font-size:13px}
+  .flow .node{background:var(--card); border:1px solid var(--line); border-radius:9px; padding:9px 13px; font-weight:600}
+  .flow .arw{color:var(--accent); font-weight:700}
+  .flow .node.hot{border-color:var(--emerald); color:var(--emerald)}
+
+  .cards{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:24px}
+  .mini{border:1px solid var(--line); border-radius:12px; padding:19px; background:var(--card)}
+  .mini .big{font-family:var(--serif); font-size:27px; font-weight:600; color:var(--accent); font-variant-numeric:tabular-nums}
+  .mini .lab{font-size:13.5px; color:var(--muted); margin-top:6px}
+
+  .pull{font-family:var(--serif); font-size:clamp(20px,2.8vw,27px); line-height:1.32; letter-spacing:-.01em; max-width:24ch; margin:8px 0 0}
+  .pull .hl{color:var(--accent)}
+
+  footer{padding:48px 0 0; color:var(--muted); font-size:14px}
+  footer .flinks{display:flex; gap:22px; flex-wrap:wrap; margin-bottom:18px}
+  footer .fine{font-size:12px; color:var(--faint); max-width:var(--measure); line-height:1.6}
+
+  @media (max-width:820px){
+    .page{padding:4px 14px 56px}
+    .stars-grid{grid-template-columns:1fr; gap:20px}
+    .lens{grid-template-columns:1fr}
+    .ladder{grid-template-columns:1fr}
+    .cards{grid-template-columns:1fr}
+    .step{grid-template-columns:44px 1fr; gap:14px}
+    section{padding:46px 0}
+  }
+</style>
+
+<div class="page">
+<div class="wrap">
+
+  <header class="hero">
+    <div class="spine"><i></i><i></i><i></i></div>
+    <div class="tag">day_9x · a working prototype, not a slide</div>
+    <h1>Onboarding an AI&nbsp;agent<br>like a new&nbsp;hire.</h1>
+    <p class="lede">An AI agent is the fastest-learning teammate you'll ever hire — and it arrives with zero context about <em>your</em> business.</p>
+    <p class="sub">This app runs the first 90 days of an AI teammate on a credit-risk data-ops scrum team, modelled step-by-step on Michael Watkins' <em>The First 90 Days</em>. The question it answers isn't <span class="mono">which&nbsp;model</span> — it's whether a team knows how to <em>onboard</em> one: scoped work, a human reviewer, and trust earned in stages.</p>
+    <div class="cta">
+      <span class="btn here"><span class="dot"></span> You're in the live demo — explore the tabs above ↑</span>
+      <a class="btn" href="https://github.com/vijayarajks639-afk/day_9x" target="_blank" rel="noopener">View the source</a>
+    </div>
+  </header>
+
+  <section class="reveal">
+    <div class="kicker-row"><div>
+      <p class="eyebrow">The premise</p>
+      <h2>Not human versus AI. A new junior on the team.</h2>
+    </div></div>
+    <p class="say">Think back to your own first 90 days in a role. You were qualified — that's why you were hired. So why weren't you productive on day one? Somebody gave you context, small tasks, a reviewer, and slowly let go. day_9x does exactly that for an AI agent named <b>Kai</b> — and in the story, the humans are the mentors, reviewers and deciders. The agent is the junior.</p>
+    <p class="pull">The bet: the winners of enterprise AI won't be the ones with the best model — they'll be the teams that know how to <span class="hl">onboard</span> one.</p>
+  </section>
+
+  <section class="reveal">
+    <div class="kicker-row"><div>
+      <p class="eyebrow">Watkins, chapter 3 · the diagnostic</p>
+      <h2>STARS — read the situation before you onboard</h2>
+    </div></div>
+    <p class="say">You don't onboard someone into a burning crisis the same way you onboard them into a calm, healthy team. <b>STARS</b> is Watkins' name for five situations a leader can inherit — <span class="mono">S</span>tart-up, <span class="mono">T</span>urnaround, <span class="mono">A</span>ccelerating growth, <span class="mono">R</span>ealignment, <span class="mono">S</span>ustaining success. In day_9x, the situation you pick (on the <b>Charter</b> tab) <em>changes the pace of onboarding</em>: how long the agent quietly shadows before it's trusted with scoped work, and how fast it earns full autonomy.</p>
+
+    <p class="mono" style="font-size:13px;color:var(--faint);margin-top:24px;margin-bottom:0">↓ Pick a situation — watch the 90-day plan re-shape itself</p>
+    <div class="stars-grid">
+      <div class="situations" id="situations" role="tablist" aria-label="STARS situations"></div>
+      <div class="panel">
+        <div class="pname" id="p-name">Turnaround</div>
+        <div class="pnote" id="p-note"></div>
+        <div class="bar" aria-hidden="true">
+          <span class="seg-s" id="seg-s"></span>
+          <span class="seg-g" id="seg-g"></span>
+          <span class="seg-a" id="seg-a"></span>
+        </div>
+        <div class="legend">
+          <b><span class="sw" style="background:var(--indigo)"></span>Shadow</b>
+          <b><span class="sw" style="background:var(--sky)"></span>Gated</b>
+          <b><span class="sw" style="background:var(--emerald)"></span>Autonomous</b>
+        </div>
+        <div class="daymap" id="p-daymap"></div>
+      </div>
+    </div>
+
+    <div class="lens">
+      <div class="col biz">
+        <h4>◆ In the boardroom</h4>
+        <p>STARS makes the onboarding plan honest about context. A crisis backlog (<b>Turnaround</b>) gets a short watch-and-learn and fast, tight-leashed wins. A brand-new capability (<b>Start-up</b>) invests up front in learning because there are no runbooks yet. The same tool, tuned to the situation you're actually in.</p>
+      </div>
+      <div class="col tech">
+        <h4>◇ In the engine room</h4>
+        <p>Each STARS key carries two fractions — <span class="mono">shadow_frac</span> and <span class="mono">gated_frac</span> — that split the timeline into Shadow → Gated → Autonomous bands. Choosing a situation on the Charter tab re-derives the sprint plan and the phase widths; everything downstream (checkpoints, breakeven pacing) follows from it.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="reveal">
+    <div class="kicker-row"><div>
+      <p class="eyebrow">The approach · how the agent is loaded onto the team</p>
+      <h2>Five stages, the same shape as onboarding a person</h2>
+    </div></div>
+    <p class="say">The tabs above are the agent's 90-day journey, in order. Nothing is skipped; trust is only ever spent after it's earned.</p>
+
+    <div class="journey">
+      <div class="step">
+        <div><div class="num">1</div><div class="day">DAY 0</div></div>
+        <div>
+          <h3>The Charter</h3>
+          <div class="role">Watkins' Five Conversations, written down</div>
+          <p class="biz-line">Before any work, the team agrees what the agent is <em>for</em>: which tasks are in scope, who reviews it, and — explicitly — the <b>“stays human”</b> list of decisions it will never make.</p>
+          <p class="tech-line"><b>Under the hood:</b> the STARS situation + a duration slider (default 90 days) derive a sprint plan; the five conversations (situation, expectations, resources, style, development) become the agent's operating contract.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div><div class="num">2</div><div class="day">DAYS 1–N</div></div>
+        <div>
+          <h3>Shadow mode</h3>
+          <div class="role">Read-only · cited · knows when to say “I don't know”</div>
+          <p class="biz-line">The agent answers questions from the team's runbooks <em>with citations</em>, and <b>abstains</b> when it has no grounding — raising its hand instead of guessing. Silent, confident wrongness is the failure mode being designed out.</p>
+          <p class="tech-line"><b>Under the hood:</b> retrieval-augmented generation over the team corpus with a similarity floor; below it, the agent refuses and logs a <b>knowledge gap</b> for a human to teach later.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div><div class="num">3</div><div class="day">DAYS N–M</div></div>
+        <div>
+          <h3>Early wins</h3>
+          <div class="role">Scoped tasks behind an approval gate</div>
+          <p class="biz-line">Small, verifiable tasks (triage an incident, draft a data-quality rule). A human buddy <b>approves, rejects, or receives an escalation</b> on every one. Approvals are the evidence that builds trust.</p>
+          <p class="tech-line"><b>Under the hood:</b> a deterministic drafting backbone per task class, an escalation path for anything out-of-glossary, and a per-class ledger that records every human decision.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div><div class="num">4</div><div class="day">DAY 90</div></div>
+        <div>
+          <h3>Probation review</h3>
+          <div class="role">Autonomy decided by evals, not vibes</div>
+          <p class="biz-line">Each task class must pass its own quality bar before the agent is trusted to act on its own — exactly like a person's 90-day review. Fail, and it stays supervised.</p>
+          <p class="tech-line"><b>Under the hood:</b> a golden-set eval harness gates promotion by exit code; two “culture” cases stay red until a human coaches the unwritten rule in — then all gates go green.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div><div class="num">5</div><div class="day">ONGOING</div></div>
+        <div>
+          <h3>Breakeven &amp; retro</h3>
+          <div class="role">The number a COO remembers</div>
+          <p class="biz-line">A new hire consumes value before creating it. day_9x shows the <b>breakeven curve</b> in analyst-hours — and which hours each named human got back, shifting from doing to reviewing.</p>
+          <p class="tech-line"><b>Under the hood:</b> a value ledger (hours consumed in review vs. created by verified output) plots the crossover; STARS changes when it happens — a turnaround breaks even in ~2 sprints, a start-up nearer ~6 weeks.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="reveal">
+    <div class="kicker-row"><div>
+      <p class="eyebrow">The mechanism · trust as a threshold</p>
+      <h2>Autonomy is earned per task class — and it's revocable</h2>
+    </div></div>
+    <p class="say">Trust isn't a personality trait the agent has or lacks; it's a state it holds <em>per kind of work</em>, backed by evidence. It can be granted, held, or taken back.</p>
+    <div class="ladder">
+      <div class="rung s">
+        <div class="state">SHADOW</div>
+        <div class="what">Drafts only</div>
+        <p>Everything is reviewed. Zero autonomy. The agent watches and answers, but acts on nothing.</p>
+      </div>
+      <div class="rung g">
+        <div class="state">GATED</div>
+        <div class="what">Acts, with sign-off</div>
+        <p>Unlocked when the task class passes its eval gate. The agent may act — but a human approves every output.</p>
+      </div>
+      <div class="rung a">
+        <div class="state">AUTONOMOUS</div>
+        <div class="what">Acts, lightly audited</div>
+        <p>Offered only when the gate holds <em>and</em> enough gated work was verified. Even then, a sample is still audited.</p>
+      </div>
+    </div>
+    <div class="arrowrow"><span class="k">SHADOW</span> → <span class="k">GATED</span> → <span class="k">AUTONOMOUS</span> &nbsp;·&nbsp; per task class &nbsp;·&nbsp; evidence, not seniority</div>
+  </section>
+
+  <section class="reveal">
+    <div class="kicker-row"><div>
+      <p class="eyebrow">The differentiator · v2.0</p>
+      <h2>The knowledge miner — where the agent teaches the team back</h2>
+    </div></div>
+    <p class="say">Most of what makes a team effective is never written down — it lives in people's heads. When the agent hits one of those gaps, it doesn't just fail quietly. It <em>interviews the expert</em>, and turns the answer into reusable, credited team knowledge.</p>
+    <div class="feature">
+      <div class="flow">
+        <span class="node">Agent abstains</span><span class="arw">→</span>
+        <span class="node">Gap logged</span><span class="arw">→</span>
+        <span class="node">Agent interviews the SME</span><span class="arw">→</span>
+        <span class="node hot">Versioned, attributed Skill</span><span class="arw">→</span>
+        <span class="node">Now answers, with a citation</span>
+      </div>
+      <div class="lens" style="margin-top:24px">
+        <div class="col biz">
+          <h4>◆ In the boardroom</h4>
+          <p>This is the answer to the fear. The expert isn't replaced — they're credited. A “Teachers of the sprint” board shows whose knowledge is now answering the team's questions. Attribution is what turns the instinct to hoard know-how into the incentive to teach it.</p>
+        </div>
+        <div class="col tech">
+          <h4>◇ In the engine room</h4>
+          <p>The gap register captures every abstain as a structured lead; the agent drafts interview questions; the SME's answer is written to a versioned Skill file (<span class="mono">coached by · date · source gap</span>), re-indexed, and immediately citable. Freshness and access-control rules keep the corpus honest.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="reveal" style="border-bottom:none">
+    <div class="kicker-row"><div>
+      <p class="eyebrow">Why a stakeholder cares</p>
+      <h2>Everything reduces to hours, trust, and governance</h2>
+    </div></div>
+    <div class="cards">
+      <div class="mini">
+        <div class="big">sprints<span style="font-size:15px">, not months</span></div>
+        <div class="lab">Watkins puts a manager's breakeven near six months. For an AI teammate both sides are measurable, so the crossover lands in a handful of sprints — and you can see the day it happens.</div>
+      </div>
+      <div class="mini">
+        <div class="big">two clocks</div>
+        <div class="lab">15-day sprints pace the <em>work</em>; a report every 9 days paces <em>stakeholder communication</em>. A sponsor never waits a full sprint for a signal — that's the “9x” in the name.</div>
+      </div>
+      <div class="mini">
+        <div class="big">$0 · keyless</div>
+        <div class="lab">This whole demo runs with no API key and no cost — safe to share publicly. Governance held on purpose: no secrets on the public app, all data synthetic.</div>
+      </div>
+    </div>
+    <p class="pull" style="margin-top:34px">This isn't about a smarter model. It's about the <span class="hl">management system</span> a team already trusts — applied to its newest, fastest-learning member. <span style="color:var(--muted)">Now open the <b style="color:var(--ink)">Charter</b> tab and set the terms.</span></p>
+  </section>
+
+  <footer>
+    <div class="flinks">
+      <a href="https://github.com/vijayarajks639-afk/day_9x" target="_blank" rel="noopener">◈ Source on GitHub</a>
+    </div>
+    <p class="fine">Onboarding framework adapted from Michael D. Watkins, <em>The First 90 Days</em> (Harvard Business School Press, 2003) — frameworks paraphrased with attribution; no book text reproduced. All data in day_9x is synthetic: no real people, no real firm data.</p>
+  </footer>
+
+</div>
+</div>
+
+<script>
+  const STARS = [
+    ["Start-up", 40, 40, "Building a new data-ops capability from scratch", "No runbooks yet — heavy learning and Skill authoring before any scoped work."],
+    ["Turnaround", 15, 35, "A data-quality crisis backlog to clear fast", "Pressure to produce: a short shadow, fast scoped wins, a tight escalation SLA."],
+    ["Accelerating growth", 25, 40, "Volume scaling faster than the team", "Scale the routine task classes first to relieve the humans."],
+    ["Realignment", 35, 40, "A team in denial the old process is failing", "Cultural learning dominates — encode “how we really do it” as Skills."],
+    ["Sustaining success", 30, 40, "A healthy team protecting a high bar", "Protect the standard: slow, evidence-gated autonomy, no risky moves."]
+  ];
+  const DURATION = 90;
+  const wrapEl = document.getElementById("situations");
+  const pName = document.getElementById("p-name");
+  const pNote = document.getElementById("p-note");
+  const segS = document.getElementById("seg-s");
+  const segG = document.getElementById("seg-g");
+  const segA = document.getElementById("seg-a");
+  const dayMap = document.getElementById("p-daymap");
+
+  function render(i){
+    const row = STARS[i]; const s = row[1], g = row[2]; const a = 100 - s - g;
+    pName.textContent = row[0];
+    pNote.textContent = row[4];
+    segS.style.width = s + "%"; segS.textContent = s >= 12 ? s + "%" : "";
+    segG.style.width = g + "%"; segG.textContent = g + "%";
+    segA.style.width = a + "%"; segA.textContent = a + "%";
+    const shadowEnd = Math.round(DURATION * s / 100);
+    const gatedEnd = Math.round(DURATION * (s + g) / 100);
+    dayMap.innerHTML =
+      "Over " + DURATION + " days &nbsp;·&nbsp; shadows to <b>day " + shadowEnd +
+      "</b> &nbsp;→&nbsp; gated to <b>day " + gatedEnd +
+      "</b> &nbsp;→&nbsp; autonomous from <b>day " + gatedEnd + "</b>";
+    [].forEach.call(wrapEl.children, function(b, k){ b.setAttribute("aria-pressed", k === i ? "true" : "false"); });
+  }
+
+  STARS.forEach(function(row, i){
+    const b = document.createElement("button");
+    b.className = "sit";
+    b.setAttribute("role", "tab");
+    b.setAttribute("aria-pressed", "false");
+    b.innerHTML = '<span class="mk">' + row[0][0] + '</span><span><span class="name">' +
+      row[0] + '</span><span class="oneline">' + row[3] + '</span></span>';
+    b.addEventListener("click", function(){ render(i); });
+    wrapEl.appendChild(b);
+  });
+  render(1);
+
+  const io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if (e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target); } });
+  }, { threshold: 0.10 });
+  document.querySelectorAll(".reveal").forEach(function(el){ io.observe(el); });
+</script>

@@ -83,8 +83,19 @@ with st.sidebar:
 
 charter = Charter(stars_key=stars_key, duration=duration)
 
-tab_charter, tab_shadow, tab_wins, tab_review, tab_be = st.tabs(
-    ["📋 Charter", "👀 Shadow mode", "🎯 Early wins", "🎓 Probation review", "📈 Breakeven + Retro"])
+tab_start, tab_charter, tab_shadow, tab_wins, tab_review, tab_be = st.tabs(
+    ["👋 Start here", "📋 Charter", "👀 Shadow mode", "🎯 Early wins",
+     "🎓 Probation review", "📈 Breakeven + Retro"])
+
+
+# ── TAB 0 · Start here (the explainer landing — business + tech) ───────────────
+with tab_start:
+    import streamlit.components.v1 as components
+    _about = config.ROOT / "about.html"
+    if _about.exists():
+        components.html(_about.read_text(encoding="utf-8"), height=3700, scrolling=True)
+    else:
+        st.info("Explainer page not found — see the tabs above to explore the demo.")
 
 
 # ── TAB 1 · Charter ───────────────────────────────────────────────────────────

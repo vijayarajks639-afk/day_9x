@@ -11,6 +11,11 @@ COPY --chown=user requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY --chown=user . .
+
+# HF Spaces creates /app as root; the app writes its synthetic world under /app/data at
+# runtime, so uid-1000 needs to own the WORKDIR itself (not just the copied files).
+RUN chown -R user:user /app
+
 USER user
 ENV HOME=/home/user
 

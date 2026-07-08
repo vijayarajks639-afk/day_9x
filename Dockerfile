@@ -12,12 +12,15 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY --chown=user . .
 
-# HF Spaces creates /app as root; the app writes its synthetic world under /app/data at
-# runtime, so uid-1000 needs to own the WORKDIR itself (not just the copied files).
-RUN chown -R user:user /app
+# HF Spaces creates /app as root. The app writes its synthetic world + model cache at
+# runtime, so point everything writable at $HOME (owned by uid-1000, always writable)
+# and belt-and-suspenders chown the WORKDIR too.
+RUN chown -R user:user /app && mkdir -p /home/user/data && chown -R user:user /home/user
 
 USER user
 ENV HOME=/home/user
+ENV DAY9X_DATA_DIR=/home/user/data
+ENV FASTEMBED_CACHE_PATH=/home/user/.cache/fastembed
 
 EXPOSE 8501
 CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0", "--server.headless=true"]

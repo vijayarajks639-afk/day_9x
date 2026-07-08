@@ -21,7 +21,10 @@ from pathlib import Path
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
 ROOT = Path(__file__).resolve().parent
-DATA_DIR = ROOT / "data"               # generated synthetic team artefacts (gitignored)
+# The synthetic world is generated at runtime, so DATA_DIR must be WRITABLE. Locally
+# that's ROOT/data; in a read-only-app container (e.g. a HuggingFace Docker Space where
+# /app is root-owned) set DAY9X_DATA_DIR to a writable path such as $HOME/data.
+DATA_DIR = Path(os.environ.get("DAY9X_DATA_DIR") or (ROOT / "data"))  # gitignored artefacts
 RUNBOOKS_DIR = DATA_DIR / "runbooks"   # the .md corpus the agent reads in shadow mode
 SKILLS_DIR = DATA_DIR / "skills"       # coached "Skills" written by SMEs (cultural knowledge)
 
